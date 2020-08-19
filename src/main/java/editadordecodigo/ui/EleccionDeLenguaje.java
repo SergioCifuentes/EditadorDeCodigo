@@ -175,13 +175,13 @@ public class EleccionDeLenguaje extends javax.swing.JDialog {
     }
  
 private void agregarInfo(int index){
-    txtInfo.setText("");
-    TextoDeAcciones.appendToPane(txtInfo,lengujaes.get(index).toString(),Color.BLACK);
-    TextoDeAcciones.appendToPane(txtInfo," "+lengujaes.get(index).getVersion(),Color.RED);
     
-    TextoDeAcciones.appendToPane(txtInfo,"\nAutor: "+lengujaes.get(index).getAutor(),Color.BLACK);
-    TextoDeAcciones.appendToPane(txtInfo,"\nLanzamiento: ",Color.BLACK);
-    TextoDeAcciones.appendToPane(txtInfo," "+lengujaes.get(index).getLanzamiento(),Color.RED);
+    TextoDeAcciones.appendToPane(txtInfo,lengujaes.get(index).toString(),Color.BLACK,true);
+    TextoDeAcciones.appendToPane(txtInfo," "+lengujaes.get(index).getVersion(),Color.RED,false);
+    
+    TextoDeAcciones.appendToPane(txtInfo,"\nAutor: "+lengujaes.get(index).getAutor(),Color.BLACK,false);
+    TextoDeAcciones.appendToPane(txtInfo,"\nLanzamiento: ",Color.BLACK,false);
+    TextoDeAcciones.appendToPane(txtInfo," "+lengujaes.get(index).getLanzamiento(),Color.RED,false);
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;

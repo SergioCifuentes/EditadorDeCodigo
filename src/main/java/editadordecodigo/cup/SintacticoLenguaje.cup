@@ -1,0 +1,123 @@
+
+package editadordecodigo.cup;
+
+import java_cup.runtime.Symbol;
+    import editadordecodigo.ui.Principal;
+
+ parser code {:
+    
+
+    public boolean error;
+    public boolean errorRecuperable;
+    public TablaDeSimbolos tablaDeSimbolos;
+        protected Principal principal;
+    public  void setFrame(Principal frame){
+        principal =frame;
+    }
+    public void setTablaDeSimbolos(TablaDeSimbolos tablaDeSimbolos) {
+        this.tablaDeSimbolos = tablaDeSimbolos;
+    }
+     public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("Error Sintactico Recuperado\n");
+        System.out.println("\t \tLexema: "+ lexema+"\n");
+        System.out.println("\t \tFila: "+ fila+"\n");
+        System.out.println("\t \tColumna: "+ columna+"\n");
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        try{
+            String lexema = s.value.toString();
+            int fila = s.right;
+            int columna = s.left;
+            System.out.println("Error Sintactico Panic Mode\n");
+            System.out.println("\t \tLexema: "+ lexema+"\n");
+            System.out.println("\t \tFila: "+ fila+"\n");
+            System.out.println("\t \tColumna: "+ columna+"\n");
+        } catch (Exception ex) {
+         }
+    }
+:}
+
+action code {:
+    
+
+:}
+
+/* Terminals (tokens returned by the scanner). */
+terminal nombre, version, autor, lanzamiento, extension, separador, puntoYComa, asterisco, qMark, suma, op, numeros, letras, saltoDeLinea,
+ tab, blanco, comillas, parentesisA, parentesisC, corcheteA, corcheteC, igual, ampersand, coma, sTerminal, no, dosPuntos,
+llaveA, llaveC;
+
+    
+terminal Extension, Id, Entero, NumeroVersion, Cadena, Anything,Fuente,Codigo;
+
+/* Non-terminals */
+non terminal INICIO,CADENA_ESPACIOS , INFO, INFO_NO_OBL, FUENTE,STR, EXPRESIONES, EXPRESION_OP, 
+EXP, SALTOS,EXPRESION, EX, AGRUPACION_A, AGRUPACION_C,SIMBOLOS,CADENAS,GRAMATICA,PRODS,CODIGO;
+
+
+start with INICIO;
+
+INICIO 		::= INFO FUENTE  EXPRESIONES separador SIMBOLOS separador GRAMATICA {::}
+                    |error {::} ;
+INFO   ::= INFO_NO_OBL nombre dosPuntos CADENA_ESPACIOS puntoYComa INFO_NO_OBL ;
+INFO_NO_OBL  ::=  version dosPuntos NumeroVersion puntoYComa INFO_NO_OBL
+                        |autor dosPuntos CADENA_ESPACIOS puntoYComa INFO_NO_OBL
+			|lanzamiento dosPuntos Entero puntoYComa INFO_NO_OBL
+			|extension dosPuntos Cadena puntoYComa INFO_NO_OBL
+			|;
+CADENA_ESPACIOS ::= Cadena Cadena
+                    |Cadena;
+FUENTE		::= Fuente;
+EXPRESIONES     ::= Cadena igual EXP puntoYComa EXPRESIONES
+                        | ampersand igual EXP puntoYComa EXPRESIONES
+			|;
+EXP             ::= EXPRESION_OP;
+
+SALTOS 		::= blanco
+			|saltoDeLinea
+			|tab;
+EXPRESION_OP    ::= EXPRESION EXPRESION_OP
+                        | EXPRESION op EXPRESION_OP
+                        |EXPRESION;
+EXPRESION	::=   AGRUPACION_A EXPRESION_OP AGRUPACION_C EX 
+			|numeros EX
+			|letras EX
+			|SALTOS 
+			|Cadena
+                        |comillas STR comillas;
+STR             ::= Cadena 
+                    |SALTOS 
+                    |EX
+                    |AGRUPACION_A
+                    |AGRUPACION_C;
+EX 		::= asterisco
+			|qMark
+			|suma
+			|;
+AGRUPACION_A    ::= parentesisA
+                    |corcheteA;
+AGRUPACION_C    ::= parentesisC
+                    |corcheteC;
+SIMBOLOS        ::= sTerminal CADENAS puntoYComa SIMBOLOS{::}
+                    |no sTerminal CADENAS puntoYComa SIMBOLOS{::}
+                    |;
+CADENAS         ::= Cadena coma CADENAS
+                 |Cadena;
+GRAMATICA       ::= Cadena dosPuntos dosPuntos PRODS CODIGO  GRAMATICA
+                    |Cadena dosPuntos dosPuntos PRODS CODIGO;
+PRODS           ::= Cadena:nombre dosPuntos Cadena:id PRODS:prod    {::}
+                    |Cadena PRODS
+                    |;
+CODIGO          ::=Codigo
+                    |puntoYComa;
+
+
+
+
+
+

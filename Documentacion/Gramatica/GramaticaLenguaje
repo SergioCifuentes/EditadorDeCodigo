@@ -1,0 +1,47 @@
+N: {Inicio,Cabecera,Lienzos, Lienzo,Comps_Tiempo, Comp_Tiempo,Imagenes, Comps_Imagen, Comp_Imagen, Id,Nombre }
+RGB,NumRGB,NumHex}
+T:  {{,},,,:,",VARS,INSTRUCCIONES ,id ,[,] ,int, String,boolean,true, false, PINTAR, if,else, while, and, or ,=, ==, <, >, >=, <=, <>,+,-,/,*,..}
+S:  {Inicio}
+P:
+
+INICIO 			::=  INFO separador FUENTE separador EXPRESIONES separador SIMBOLOS separador GRAMATICA
+INFO 			::= INFO_NO_OBL nombre dosPuntos String puntoYComa INFO_NO_OBL 
+INFO_NO_OBL	::=  version dosPuntos NumeroVersion puntoYComa INFO_NO_OBL
+					|autor dosPuntos String puntoYComa INFO_NO_OBL
+					|lanzamiento dosPuntos Entero puntoYComa INFO_NO_OBL
+					|extension dosPuntos Extension puntoYComa INFO_NO_OBL
+					|
+FUENTE		::= Anything
+EXPRESIONES     ::= Id igual EXP puntoYComa EXPRESIONES
+					| ampersand igual EXP puntoYComa EXPRESIONES
+					|
+EXP 			::= EXPRESION
+					|CARACTERES
+CARACTERES 	::= comillas String comillas
+					|comillas SALTOS comillas
+SALTOS 		::= blanco
+					|saltoDeLinea
+					|tab
+EXPRESION		::=  EXPRESION EXPRESION
+				| EXPRESION o EXPRESION
+				| AGRUPACION EXPRESION AGRUPACION EX
+				|numeros
+				|letras
+				|SALTOS
+				|String
+				|
+
+EX 				::= asterisco
+					|qMark
+					|suma
+					|
+AGRUPACION_A    ::= parentesisA
+			                 |corcheteA;
+AGRUPACION_C    ::= parentesisC
+                    			|corcheteC;
+SIMBOLOS        	::= terminal CADENAS puntoYComa SIMBOLOS
+                    			|no terminal CADENAS puntoYComa SIMBOLOS
+                    			|;
+CADENAS         	::= Cadena,CADENAS
+                 			|Cadena;
+

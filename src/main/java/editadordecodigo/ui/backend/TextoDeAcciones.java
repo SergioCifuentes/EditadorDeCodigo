@@ -17,8 +17,10 @@ import javax.swing.text.StyleContext;
  * @author sergio
  */
 public class TextoDeAcciones {
-        public static void appendToPane(JTextPane tp, String msg, Color c) {
-            
+        public static void appendToPane(JTextPane tp, String msg, Color c,boolean borrar) {
+            if (borrar) {
+                tp.setText("");
+            }
             StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY,
                 StyleConstants.Foreground, c);
