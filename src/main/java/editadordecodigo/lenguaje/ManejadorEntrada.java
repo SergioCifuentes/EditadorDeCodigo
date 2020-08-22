@@ -44,6 +44,7 @@ public class ManejadorEntrada {
                     asl.setTablaDeSimbolos(tds);
                     asl.setFrame(pc);
                     asl.parse();
+                    
                 }else{
                     TextoDeAcciones.appendToPane(pc.getjTxtErrores(),"Secciones insuficientes del archivo (.len)", Color.red, true);
                 }

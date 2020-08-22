@@ -9,6 +9,8 @@ import editadordecodigo.archivos.Archivo;
 import editadordecodigo.lenguaje.ControlLenguajes;
 import editadordecodigo.lenguaje.ManejadorEntrada;
 import editadordecodigo.ui.backend.NumeroLinea;
+import editadordecodigo.ui.backend.TextoDeAcciones;
+import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -209,6 +211,10 @@ private void contarLineas(JScrollPane jsp,JTextPane txtPrin){
         jsp.setRowHeaderView(nl);
  
     }
+public void escribirEnErrores(String text){
+    TextoDeAcciones.appendToPane(txtErrores, text, Color.red, false);
+}
+
 
 private void agregarArchivo(Archivo archivo){
     JScrollPane jsp = new JScrollPane();

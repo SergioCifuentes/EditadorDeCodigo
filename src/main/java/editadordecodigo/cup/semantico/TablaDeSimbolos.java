@@ -5,6 +5,7 @@
  */
 package editadordecodigo.cup.semantico;
 
+import editadordecodigo.lenguaje.tabla.Simbolo;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +18,17 @@ public class TablaDeSimbolos {
     public static final int TIPO_SIMBOLO_TERMINAL = 1;
     public static final int TIPO_SIMBOLO_NO_TERMINAL = 2;
 
+     public boolean verificarExistencia(String id,int tipo){
+         if (tipo==TIPO_SIMBOLO_NO_TERMINAL||tipo==TIPO_SIMBOLO_TERMINAL) {
+             return obtenerExistencia(id, TIPO_SIMBOLO_NO_TERMINAL)!=null||obtenerExistencia(id, TIPO_SIMBOLO_TERMINAL)!=null;
+         }else{
+        return obtenerExistencia(id, tipo)!=null;
+         }
+    }
+     
+     public boolean verificarExistenciaConTipo(String id,int tipo){
+             return obtenerExistencia(id, tipo)!=null;
+    }     
     public TablaDeSimbolos() {
         objetos = new ArrayList<>();
     }
@@ -40,11 +52,21 @@ public class TablaDeSimbolos {
 
     }
 
-    public void InsertarValor(String id, int tipo, Object valor) {
+    public void insertarValor(String id, int tipo, Object valor) {
+        System.out.println("Insertando "+id);
         Objeto ob = (Objeto) obtenerExistencia(id, tipo);
         ob.setValor(valor);
     }
 
+    public ArrayList<Simbolo> getSimbolos(){
+        ArrayList<Simbolo> simbolos = new ArrayList<>();
+        for (int i = 0; i < objetos.size(); i++) {
+            if (objetos.get(i).getTipo()==TIPO_SIMBOLO_TERMINAL||objetos.get(i).getTipo()==TIPO_SIMBOLO_NO_TERMINAL) {
+                simbolos.add((Simbolo)objetos.get(i).getValor());
+            }
+        }
+        return simbolos;
+    }
     public Object obtenerExistencia(String id) {
 
         int index = binarySearch(id);
@@ -60,7 +82,11 @@ public class TablaDeSimbolos {
         }
 
     }
-
+    public Object getValor(String id){
+        Objeto ob = (Objeto) obtenerExistencia(id);
+        return ob.getValor();
+    }
+    
     public Integer obtenerTipo(String id) {
         int index = binarySearch(id);
         if (objetos.size() >= index + 1 && objetos.get(index).getId().equals(id)) {

@@ -3,6 +3,9 @@ package editadordecodigo.cup;
 
 import java_cup.runtime.Symbol;
     import editadordecodigo.ui.Principal;
+import editadordecodigo.lenguaje.tabla.*;
+import java.util.ArrayList;
+import editadordecodigo.cup.semantico.TablaDeSimbolos;
 
  parser code {:
     
@@ -10,7 +13,7 @@ import java_cup.runtime.Symbol;
     public boolean error;
     public boolean errorRecuperable;
     public TablaDeSimbolos tablaDeSimbolos;
-        protected Principal principal;
+    protected Principal principal;
     public  void setFrame(Principal frame){
         principal =frame;
     }
@@ -43,9 +46,22 @@ import java_cup.runtime.Symbol;
 :}
 
 action code {:
-    
+private String ejemplo;
+
+     protected void mostrarAtributoRepetido(String atributo, Symbol s,AnalizadorSintacticoLenguaje asl) {
+
+        asl.principal.escribirEnErrores("El atributo " + atributo + " se encuentra repetido\n");
+
+        asl.principal.escribirEnErrores("\t \tFila: " + s.right + "\n");
+        asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
+
+    }
 
 :}
+init with {:
+System.out.println("ssss");
+:}
+
 
 /* Terminals (tokens returned by the scanner). */
 terminal nombre, version, autor, lanzamiento, extension, separador, puntoYComa, asterisco, qMark, suma, op, numeros, letras, saltoDeLinea,
@@ -62,7 +78,7 @@ EXP, SALTOS,EXPRESION, EX, AGRUPACION_A, AGRUPACION_C,SIMBOLOS,CADENAS,GRAMATICA
 
 start with INICIO;
 
-INICIO 		::= INFO FUENTE  EXPRESIONES separador SIMBOLOS separador GRAMATICA {::}
+INICIO 		::= INFO FUENTE  EXPRESIONES separador SIMBOLOS separador GRAMATICA:gram {:ConstructorDeTabla cdt = new ConstructorDeTabla(asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram);:}
                     |error {::} ;
 INFO   ::= INFO_NO_OBL nombre dosPuntos CADENA_ESPACIOS puntoYComa INFO_NO_OBL ;
 INFO_NO_OBL  ::=  version dosPuntos NumeroVersion puntoYComa INFO_NO_OBL
@@ -103,19 +119,82 @@ AGRUPACION_A    ::= parentesisA
                     |corcheteA;
 AGRUPACION_C    ::= parentesisC
                     |corcheteC;
-SIMBOLOS        ::= sTerminal CADENAS puntoYComa SIMBOLOS{::}
-                    |no sTerminal CADENAS puntoYComa SIMBOLOS{::}
+SIMBOLOS        ::= sTerminal CADENAS:cads puntoYComa SIMBOLOS{:ArrayList<String> nombres=(ArrayList<String>)cads;
+                                                                    for (int i = 0; i < nombres.size(); i++) {
+                                                                        if(!asl.tablaDeSimbolos.verificarExistencia(nombres.get(i),TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
+                                                                            Simbolo terminal = new Simbolo(nombres.get(i),nombres.get(i),true);
+                                                                             asl.tablaDeSimbolos.insertObject(nombres.get(i),TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL,terminal);   
+                                                                           }else{
+                                                                                mostrarAtributoRepetido("Atributo No Terminal"+nombres.get(i),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl); 
+                                                                            }
+                                                                    }:}
+                    |no sTerminal CADENAS:cads puntoYComa SIMBOLOS{:ArrayList<String> nombres=(ArrayList<String>)cads;
+                                                                    for (int i = 0; i < nombres.size(); i++) {
+                                                                        if(!asl.tablaDeSimbolos.verificarExistencia(nombres.get(i),TablaDeSimbolos.TIPO_SIMBOLO_NO_TERMINAL)){
+                                                                            Simbolo noTerminal = new Simbolo(nombres.get(i),nombres.get(i),false);
+                                                                             asl.tablaDeSimbolos.insertObject(nombres.get(i),TablaDeSimbolos.TIPO_SIMBOLO_NO_TERMINAL,noTerminal);   
+                                                                           }else{
+                                                                                mostrarAtributoRepetido("Atributo No Terminal"+nombres.get(i),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl); 
+                                                                            }
+                                                                    }:}
                     |;
-CADENAS         ::= Cadena coma CADENAS
-                 |Cadena;
-GRAMATICA       ::= Cadena dosPuntos dosPuntos PRODS CODIGO  GRAMATICA
-                    |Cadena dosPuntos dosPuntos PRODS CODIGO;
-PRODS           ::= Cadena:nombre dosPuntos Cadena:id PRODS:prod    {::}
-                    |Cadena PRODS
-                    |;
-CODIGO          ::=Codigo
-                    |puntoYComa;
-
+CADENAS         ::= Cadena:nom coma CADENAS:cads {:ArrayList<String> nombres=(ArrayList<String>)cads;
+                                                    ArrayList<String> todos=new ArrayList<String>();
+                                                    todos.add((String)nom);
+                                                    todos.addAll(nombres);
+                                                    RESULT =todos;:}
+                 |Cadena:nombre {:ArrayList<String> nombres= new ArrayList<String>();
+                                nombres.add((String)nombre);
+                                RESULT =nombres;:};
+GRAMATICA       ::= Cadena:noterminal dosPuntos dosPuntos PRODS:prod CODIGO:code  GRAMATICA:gram {:ArrayList prodsantiguos= (ArrayList<Produccion>)gram;
+                                                                                        if(asl.tablaDeSimbolos.verificarExistenciaConTipo((String)noterminal,TablaDeSimbolos.TIPO_SIMBOLO_NO_TERMINAL)){
+                                                                                          
+                                                                                          Produccion produccion = new Produccion((Simbolo)asl.tablaDeSimbolos.getValor((String)noterminal),(ArrayList<Simbolo>)prod,(String)code);
+                                                                                          ArrayList prods= new ArrayList<Produccion>();
+                                                                                          prods.add(produccion);
+                                                                                          prods.addAll(prodsantiguos);
+                                                                                          RESULT = prods;
+                                                                                    }else{
+                                                                                    RESULT=prodsantiguos;
+                                                                                    //simbolo no es un noterminal o no existe
+                                                                                        }:}
+                    |Cadena:noterminal dosPuntos dosPuntos PRODS:prod CODIGO:code {:
+                                                                                        if(asl.tablaDeSimbolos.verificarExistenciaConTipo((String)noterminal,TablaDeSimbolos.TIPO_SIMBOLO_NO_TERMINAL)){
+                                                                                          Produccion produccion = new Produccion((Simbolo)asl.tablaDeSimbolos.getValor((String)noterminal),(ArrayList<Simbolo>)prod,(String)code);
+                                                                                          ArrayList prods= new ArrayList<Produccion>();
+                                                                                           prods.add(produccion);
+                                                                                          RESULT = prods;
+                                                                                    }else{
+                                                                                    RESULT=new ArrayList<Produccion>();
+                                                                                    //simbolo no es un noterminal o no existe
+                                                                                        }:};
+PRODS           ::= Cadena:nombre dosPuntos Cadena:id PRODS:prod    {:ArrayList<Simbolo> simbolos= new ArrayList<Simbolo>();
+                                                                        simbolos.addAll((ArrayList<Simbolo>)prod);
+                                                                    if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
+                                                                        
+                                                                       Simbolo nuevo = ((Simbolo)asl.tablaDeSimbolos.getValor((String)nombre));
+                                                                       nuevo.setId((String)id);
+                                                                       simbolos.add(nuevo);
+                                                                       RESULT= simbolos;
+                                                               }else{
+                                                                    //ERROR NO EXISTE
+                                                                        RESULT =new ArrayList<Simbolo>();
+                                                                 }:}
+                    |Cadena:nombre PRODS:prod {:
+                                                                       ArrayList<Simbolo> simbolos= new ArrayList<Simbolo>();
+                                                                    if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
+                                                                        Simbolo nuevo = ((Simbolo)asl.tablaDeSimbolos.getValor((String)nombre));
+                           
+                                                                       
+                                                                       simbolos.addAll((ArrayList<Simbolo>)prod);
+                                                                       simbolos.add(nuevo);
+                                                                       RESULT =simbolos;
+                                                               }else{
+                                                                        RESULT =new ArrayList<Simbolo>();
+                                                                 }:}
+                    |{:RESULT =new ArrayList<Simbolo>();:};
+CODIGO          ::=Codigo:code{:RESULT=code;:}
+                    |puntoYComa{:RESULT=null;:};
 
 
 
