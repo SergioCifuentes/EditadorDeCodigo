@@ -20,6 +20,23 @@ public class PrimerosYSiguientes {
 
     }
 
+    public boolean esVacioDeTabla(Simbolo sim){
+        for (int i = 0; i < tabla.size(); i++) {
+            if (tabla.get(i).getId().equals(sim.getNombre())) {
+                return tabla.get(i).isVacio();
+            }
+        }
+        return false;
+    }
+    
+    public ArrayList<Simbolo> obtenerPrimeros(Simbolo sim){
+        for (int i = 0; i < tabla.size(); i++) {
+            if (tabla.get(i).getId().equals(sim.getNombre())) {
+                return tabla.get(i).primeros;
+            }
+        }
+        return null;
+    }
     protected void armarTabla(ArrayList<Simbolo> simbolos, ArrayList<Produccion> producciones) {
         for (int i = 0; i < simbolos.size(); i++) {
             if (!simbolos.get(i).isTerminal()) {
@@ -44,7 +61,7 @@ public class PrimerosYSiguientes {
 
             if (producciones.get(i).getNoTerminal().getNombre().equals(simbolo)) {
 //Produccion es vacio
-System.out.println("EM "+simbolo+"  "+producciones.get(i).getProducciones().size());
+
                 if (producciones.get(i).getProducciones() == null || producciones.get(i).getProducciones().isEmpty()) {
                     agregarSinDuplicar(primeros, Simbolo.VACIO);
                     //Si es terminal
@@ -54,23 +71,23 @@ System.out.println("EM "+simbolo+"  "+producciones.get(i).getProducciones().size
                 } else if (isVacio(producciones.get(i).getProducciones().get(0).getNombre(), producciones)) {
                     ArrayList<Simbolo> primerosAMeter = new ArrayList<>();
                     boolean todosVacios = true;
-                    System.out.println("EMPEZAR CICLO PARA "+simbolo+"  "+producciones.get(i).getProducciones().size());
+
                     //Ciclo de las producciones Siguientes
                     for (int j = 0; j < producciones.get(i).getProducciones().size(); j++) {
                         //Si Es Terminal
                         if (producciones.get(i).getProducciones().get(j).isTerminal()) {
-                            System.out.println("ES TERMINAL "+producciones.get(i).getProducciones().get(j).getNombre()+" para "+simbolo);
+
                             agregarSinDuplicar(primerosAMeter, producciones.get(i).getProducciones().get(j));
                             todosVacios = false;
                             break;
-                         //Si es igual al simbolo evaluado
+                            //Si es igual al simbolo evaluado
                         } else if (producciones.get(i).getProducciones().get(0).getNombre() == simbolo) {
                             if (!isVacio(producciones.get(i).getProducciones().get(j).getNombre(), producciones)) {
                                 todosVacios = false;
-                             break;
+                                break;
                             }
                         } else if (!isVacio(producciones.get(i).getProducciones().get(j).getNombre(), producciones)) {
-                            
+
                             ArrayList<Simbolo> primerosDelSiguiente = encontrarPrimeros(producciones.get(i).getProducciones().get(j).getNombre(), producciones);
                             for (int k = 0; k < primerosDelSiguiente.size(); k++) {
                                 agregarSinDuplicar(primerosAMeter, primerosDelSiguiente.get(k));
@@ -78,18 +95,18 @@ System.out.println("EM "+simbolo+"  "+producciones.get(i).getProducciones().size
                             todosVacios = false;
                             break;
                         } else {
-                            
+
                             ArrayList<Simbolo> primerosDelSiguiente = encontrarPrimeros(producciones.get(i).getProducciones().get(j).getNombre(), producciones);
-                            System.out.println("PARA SIMBOLO "+simbolo+"ES VACIO "+producciones.get(i).getProducciones().get(j).getNombre()+" "+primerosDelSiguiente.size());
+
                             for (int k = 0; k < primerosDelSiguiente.size(); k++) {
                                 agregarSinDuplicar(primerosAMeter, primerosDelSiguiente.get(k));
                             }
-                           
+
                         }
 
                     }
                     if (!todosVacios) {
-                        System.out.println("VACIOS");
+
                         primerosAMeter.remove(Simbolo.VACIO);
                     }
                     for (int j = 0; j < primerosAMeter.size(); j++) {
@@ -124,7 +141,7 @@ System.out.println("EM "+simbolo+"  "+producciones.get(i).getProducciones().size
     private boolean isVacio(String simbolo, ArrayList<Produccion> producciones) {
         for (int i = 0; i < producciones.size(); i++) {
             if (producciones.get(i).getNoTerminal().getNombre().equals(simbolo)) {
-                
+
                 if (producciones.get(i).getProducciones() == null || producciones.get(i).getProducciones().isEmpty()) {
                     return true;
                 }
@@ -155,5 +172,13 @@ System.out.println("EM "+simbolo+"  "+producciones.get(i).getProducciones().size
             this.siguientes = siguientes;
         }
 
+        public String getId() {
+            return id;
+        }
+
+        public boolean isVacio() {
+            return vacio;
+        }
+        
     }
 }

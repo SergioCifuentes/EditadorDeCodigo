@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Simbolo {
     public  static final Simbolo VACIO=new Simbolo("vacio", "vacio", true);
     public  static final Simbolo COMODIN  =new Simbolo("comodin", "comodin", true);
+    public  static final Simbolo PRIMA  =new Simbolo("prima", "prima", true);
     private String nombre;
     private String id;
     private boolean terminal;

@@ -19,7 +19,7 @@ public class Produccion {
     public Produccion(Simbolo noTerminal, ArrayList<Simbolo> producciones, String code) {
         this.noTerminal = noTerminal;
         this.producciones = producciones;
-        if (code.startsWith("{")) {
+        if (code!=null&&code.startsWith("{")) {
             code=code.substring(1, code.length());
             code=code.replaceFirst("(?s)"+"}"+"(?!.*?"+"}"+")", "");
             code=code.replaceFirst("(?s)"+";"+"(?!.*?"+";"+")", "");
@@ -28,11 +28,11 @@ public class Produccion {
     }
     @Override
     public String toString(){
-        String str =noTerminal.getNombre()+" -> ";
-        for (int i = 0; i < producciones.size(); i++) {
-            str+=producciones.get(i).getNombre()+":"+producciones.get(i).getId()+"-"+producciones.get(i).isTerminal()+" ";
+            String str = "PP::"+noTerminal.getNombre()+"  ";
+        for (int i = 0; i <producciones.size(); i++) {
+            str+=producciones.get(i).getNombre()+" ";
         }
-        str+="CODE:"+ code;
+        System.out.println("");
         return str;
     }
 
