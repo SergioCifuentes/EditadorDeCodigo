@@ -11,14 +11,15 @@ import java.util.ArrayList;
  *
  * @author sergio
  */
-public class ConstructorDeTabla {
+public class ConstructorDeEstados {
 
     private ArrayList<Simbolo> simbolos;
     private ArrayList<Produccion> producciones;
     private PrimerosYSiguientes primerosYSiguientes;
     private ArrayList<Estado> estados;
+    private TablaLR tablaLR;
 
-    public ConstructorDeTabla(ArrayList<Simbolo> simbolos, ArrayList<Produccion> producciones) {
+    public ConstructorDeEstados(ArrayList<Simbolo> simbolos, ArrayList<Produccion> producciones) {
 
         this.simbolos = simbolos;
         this.producciones = producciones;
@@ -53,6 +54,8 @@ public class ConstructorDeTabla {
         for (int i = 0; i < estados.size(); i++) {
             System.out.println(estados.get(i));
         }
+        tablaLR= new TablaLR(estados, this.simbolos,this.producciones);
+        
     }
 
     public Estado cerradura(ArrayList<ProduccionEstado> produccion) {

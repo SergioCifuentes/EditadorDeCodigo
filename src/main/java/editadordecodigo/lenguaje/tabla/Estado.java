@@ -59,7 +59,7 @@ public class Estado {
         }
         
         ArrayList<Simbolo> simbolosAux = new ArrayList<>();
-        ConstructorDeTabla.agregarSimbolosSinRepetir(simbolosAux, simbolos);
+        ConstructorDeEstados.agregarSimbolosSinRepetir(simbolosAux, simbolos);
     return simbolosAux;
 }
 public void setConecciones(ArrayList<ConeccionDeEstado> conecciones) {

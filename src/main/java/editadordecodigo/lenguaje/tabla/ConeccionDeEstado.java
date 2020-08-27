@@ -38,6 +38,10 @@ public class ConeccionDeEstado {
     public Estado getEstadoFinal() {
         return estadoFinal;
     }
+
+    public Simbolo getSimbolo() {
+        return simbolo;
+    }
     
     
     

@@ -169,12 +169,13 @@ GRAMATICA       ::= Cadena:noterminal dosPuntos dosPuntos PRODS:prod CODIGO:code
                                                                                     //simbolo no es un noterminal o no existe
                                                                                         }:};
 PRODS           ::= Cadena:nombre dosPuntos Cadena:id PRODS:prod    {:ArrayList<Simbolo> simbolos= new ArrayList<Simbolo>();
-                                                                        simbolos.addAll((ArrayList<Simbolo>)prod);
+                                                                        
                                                                     if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
                                                                         
                                                                        Simbolo nuevo = ((Simbolo)asl.tablaDeSimbolos.getValor((String)nombre));
                                                                        nuevo.setId((String)id);
                                                                        simbolos.add(nuevo);
+                                                                        simbolos.addAll((ArrayList<Simbolo>)prod);
                                                                        RESULT= simbolos;
                                                                }else{
                                                                     //ERROR NO EXISTE
@@ -185,9 +186,9 @@ PRODS           ::= Cadena:nombre dosPuntos Cadena:id PRODS:prod    {:ArrayList<
                                                                     if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
                                                                         Simbolo nuevo = ((Simbolo)asl.tablaDeSimbolos.getValor((String)nombre));
                            
-                                                                       
-                                                                       simbolos.addAll((ArrayList<Simbolo>)prod);
                                                                        simbolos.add(nuevo);
+                                                                       simbolos.addAll((ArrayList<Simbolo>)prod);
+                                                                       
                                                                        RESULT =simbolos;
                                                                }else{
                                                                         RESULT =new ArrayList<Simbolo>();

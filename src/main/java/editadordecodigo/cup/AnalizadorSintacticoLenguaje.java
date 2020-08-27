@@ -374,9 +374,9 @@ private String ejemplo;
                                                                     if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
                                                                         Simbolo nuevo = ((Simbolo)asl.tablaDeSimbolos.getValor((String)nombre));
                            
-                                                                       
-                                                                       simbolos.addAll((ArrayList<Simbolo>)prod);
                                                                        simbolos.add(nuevo);
+                                                                       simbolos.addAll((ArrayList<Simbolo>)prod);
+                                                                       
                                                                        RESULT =simbolos;
                                                                }else{
                                                                         RESULT =new ArrayList<Simbolo>();
@@ -399,12 +399,13 @@ private String ejemplo;
 		int prodright = ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoLenguaje$stack.peek()).right;
 		Object prod = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()).value;
 		ArrayList<Simbolo> simbolos= new ArrayList<Simbolo>();
-                                                                        simbolos.addAll((ArrayList<Simbolo>)prod);
+                                                                        
                                                                     if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){
                                                                         
                                                                        Simbolo nuevo = ((Simbolo)asl.tablaDeSimbolos.getValor((String)nombre));
                                                                        nuevo.setId((String)id);
                                                                        simbolos.add(nuevo);
+                                                                       simbolos.addAll((ArrayList<Simbolo>)prod);
                                                                        RESULT= simbolos;
                                                                }else{
                                                                     //ERROR NO EXISTE
@@ -913,7 +914,7 @@ private String ejemplo;
 		int gramleft = ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoLenguaje$stack.peek()).left;
 		int gramright = ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoLenguaje$stack.peek()).right;
 		Object gram = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()).value;
-		ConstructorDeTabla cdt = new ConstructorDeTabla(asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram);
+		ConstructorDeEstados cdt = new ConstructorDeEstados(asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram);
               CUP$AnalizadorSintacticoLenguaje$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoLenguaje$stack.elementAt(CUP$AnalizadorSintacticoLenguaje$top-6)), ((java_cup.runtime.Symbol)CUP$AnalizadorSintacticoLenguaje$stack.peek()), RESULT);
             }
           return CUP$AnalizadorSintacticoLenguaje$result;

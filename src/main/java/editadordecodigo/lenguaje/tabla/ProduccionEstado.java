@@ -65,4 +65,9 @@ public class ProduccionEstado {
         this.siguientes = siguientes;
     }
 
+    public boolean esProduccionAcabada(){
+        return posicion==produccion.getProducciones().size();
+       
+   
+    }
 }
