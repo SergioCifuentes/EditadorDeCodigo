@@ -6,6 +6,7 @@
 package editadordecodigo.ui;
 
 import editadordecodigo.archivos.Archivo;
+import editadordecodigo.archivos.ManejadorDeArchivos;
 import editadordecodigo.lenguaje.ControlLenguajes;
 import editadordecodigo.lenguaje.ManejadorEntrada;
 import editadordecodigo.ui.backend.NumeroLinea;
@@ -24,6 +25,7 @@ import javax.swing.JTextPane;
 public class Principal extends javax.swing.JFrame {
     private NumeroLinea nl;
     private ControlLenguajes cl ;
+    private ManejadorDeArchivos mda;
     /**
      * Creates new form Principal
      */
@@ -31,6 +33,7 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         cl = new ControlLenguajes();
         cl.cargarPrueba();
+        mda= new ManejadorDeArchivos();
     }
 
     /**
@@ -48,6 +51,8 @@ public class Principal extends javax.swing.JFrame {
         txtErrores = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtOutput = new javax.swing.JTextPane();
+        jLabel1 = new javax.swing.JLabel();
+        lblSeleccionado = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -61,12 +66,18 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
+        menuTabla = new javax.swing.JMenuItem();
+        menuPila = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Editador De Codigo");
         setBackground(new java.awt.Color(0, 0, 51));
+
+        tabs.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabsStateChanged(evt);
+            }
+        });
 
         txtErrores.setBackground(new java.awt.Color(0, 0, 0));
         txtErrores.setForeground(new java.awt.Color(255, 255, 255));
@@ -79,6 +90,10 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane2.setViewportView(txtOutput);
 
         jTabbedPane1.addTab("Output", jScrollPane2);
+
+        jLabel1.setText("Lenguaje:");
+
+        lblSeleccionado.setText("----");
 
         jMenu1.setText("Archivo");
 
@@ -141,13 +156,19 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Ver");
-        jMenu4.setEnabled(false);
 
-        jMenuItem9.setText("Tabla LARL");
-        jMenu4.add(jMenuItem9);
+        menuTabla.setText("Tabla LARL");
+        menuTabla.setEnabled(false);
+        menuTabla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuTablaActionPerformed(evt);
+            }
+        });
+        jMenu4.add(menuTabla);
 
-        jMenuItem10.setText("Pila");
-        jMenu4.add(jMenuItem10);
+        menuPila.setText("Pila");
+        menuPila.setEnabled(false);
+        jMenu4.add(menuPila);
 
         jMenuBar1.add(jMenu4);
 
@@ -160,17 +181,27 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+                    .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 910, Short.MAX_VALUE)
                     .addComponent(jTabbedPane1))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(lblSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblSeleccionado))
+                .addGap(10, 10, 10)
+                .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -202,6 +233,15 @@ public class Principal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void tabsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabsStateChanged
+        lblSeleccionado.setText(mda.getArchivos().get(tabs.getSelectedIndex()).getLenguaje().getNombre());
+    }//GEN-LAST:event_tabsStateChanged
+
+    private void menuTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablaActionPerformed
+        TablaLALR tabla = new TablaLALR(mda.getArchivos().get(tabs.getSelectedIndex()).getLenguaje());
+        tabla.setVisible(true);
+    }//GEN-LAST:event_menuTablaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -217,32 +257,37 @@ public void escribirEnErrores(String text){
 
 
 private void agregarArchivo(Archivo archivo){
+    mda.addArchivo(archivo);
     JScrollPane jsp = new JScrollPane();
-    JTextPane textPane = new JTextPane();
-     jsp.setViewportView(textPane);
+     jsp.setViewportView(archivo);
     jsp.setVisible(true);
-    textPane.setVisible(true);
     tabs.add(archivo.getNombre()+archivo.getLenguaje().getExtension(),jsp);
-    contarLineas(jsp,textPane);
+    contarLineas(jsp,archivo);
+    tabs.setSelectedIndex(tabs.getTabCount()-1);
+    if (!menuTabla.isEnabled()) {
+        menuTabla.setEnabled(true);
+    }
 }  
 
     public JTextPane getjTxtErrores() {
         return txtErrores;
     }
-
+public ControlLenguajes getControlLenguajes(){
+    return cl;
+}
     public JTextPane getTxtOutput() {
         return txtOutput;
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -250,10 +295,12 @@ private void agregarArchivo(Archivo archivo){
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblSeleccionado;
+    private javax.swing.JMenuItem menuPila;
+    private javax.swing.JMenuItem menuTabla;
     private javax.swing.JTabbedPane tabs;
     private javax.swing.JTextPane txtErrores;
     private javax.swing.JTextPane txtOutput;

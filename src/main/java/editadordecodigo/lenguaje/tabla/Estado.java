@@ -17,7 +17,7 @@ public class Estado {
     private ArrayList<ProduccionEstado> produciones;
     private ArrayList<ConeccionDeEstado> conecciones;
 
-    public Estado(int numero, ArrayList<ProduccionEstado> produciones) {
+    public Estado(int  numero, ArrayList<ProduccionEstado> produciones) {
         this.numero = numero;
         this.produciones = produciones;
         conecciones = new ArrayList<>();

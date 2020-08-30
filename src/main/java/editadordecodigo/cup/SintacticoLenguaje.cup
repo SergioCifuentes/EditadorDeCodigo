@@ -6,6 +6,9 @@ import java_cup.runtime.Symbol;
 import editadordecodigo.lenguaje.tabla.*;
 import java.util.ArrayList;
 import editadordecodigo.cup.semantico.TablaDeSimbolos;
+import editadordecodigo.lenguaje.ConstructorDeLenguaje;
+import editadordecodigo.lenguaje.Lenguaje;
+import editadordecodigo.lenguaje.afd.*;
 
  parser code {:
     
@@ -13,6 +16,7 @@ import editadordecodigo.cup.semantico.TablaDeSimbolos;
     public boolean error;
     public boolean errorRecuperable;
     public TablaDeSimbolos tablaDeSimbolos;
+    public ConstructorDeLenguaje cdl;
     protected Principal principal;
     public  void setFrame(Principal frame){
         principal =frame;
@@ -46,12 +50,12 @@ import editadordecodigo.cup.semantico.TablaDeSimbolos;
 :}
 
 action code {:
+ private Object[] infoLenguaje = new Object[5];
+private int nuemroDeNodo=1;
 private String ejemplo;
 
      protected void mostrarAtributoRepetido(String atributo, Symbol s,AnalizadorSintacticoLenguaje asl) {
-
         asl.principal.escribirEnErrores("El atributo " + atributo + " se encuentra repetido\n");
-
         asl.principal.escribirEnErrores("\t \tFila: " + s.right + "\n");
         asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
 
@@ -78,47 +82,131 @@ EXP, SALTOS,EXPRESION, EX, AGRUPACION_A, AGRUPACION_C,SIMBOLOS,CADENAS,GRAMATICA
 
 start with INICIO;
 
-INICIO 		::= INFO FUENTE  EXPRESIONES separador SIMBOLOS separador GRAMATICA:gram {:ConstructorDeTabla cdt = new ConstructorDeTabla(asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram);:}
+INICIO 		::= INFO:info FUENTE  EXPRESIONES:estados separador SIMBOLOS separador GRAMATICA:gram {: if(info!=null){
+                                                                                                 asl.cdl= new ConstructorDeLenguaje((Lenguaje)info,asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram,(ArrayList<Expresion>)estados,numeroDeNodo);  
+                                                                                                    }:}
+                                    
                     |error {::} ;
-INFO   ::= INFO_NO_OBL nombre dosPuntos CADENA_ESPACIOS puntoYComa INFO_NO_OBL ;
-INFO_NO_OBL  ::=  version dosPuntos NumeroVersion puntoYComa INFO_NO_OBL
-                        |autor dosPuntos CADENA_ESPACIOS puntoYComa INFO_NO_OBL
-			|lanzamiento dosPuntos Entero puntoYComa INFO_NO_OBL
-			|extension dosPuntos Cadena puntoYComa INFO_NO_OBL
+INFO   ::= INFO_NO_OBL nombre dosPuntos CADENA_ESPACIOS:cad puntoYComa INFO_NO_OBL {:if(infoLenguaje[0]==null){
+                                                                                if(cad!=null){
+                                                                                    infoLenguaje[0]=cad;
+                                                                                    Lenguaje lenguaje = new Lenguaje(infoLenguaje);
+                                                                                    RESULT=lenguaje;
+                                                                                 }
+                                                                              }else{
+                                                                                mostrarAtributoRepetido("Nombre",((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);  
+                                                                                }:};
+INFO_NO_OBL  ::=  version dosPuntos NumeroVersion:num puntoYComa INFO_NO_OBL {:if(infoLenguaje[1]==null){
+                                                                                if(num!=null){
+                                                                                    infoLenguaje[1]=num;
+                                                                                 }
+                                                                              }else{
+                                                                                mostrarAtributoRepetido("Version",((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);  
+                                                                                }:}
+                        |autor dosPuntos CADENA_ESPACIOS:cad puntoYComa INFO_NO_OBL {:if(infoLenguaje[2]==null){
+                                                                                if(cad!=null){
+                                                                                    infoLenguaje[2]=cad;
+                                                                                 }
+                                                                              }else{
+                                                                                mostrarAtributoRepetido("Autor",((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);  
+                                                                                }:}
+			|lanzamiento dosPuntos Entero:num puntoYComa INFO_NO_OBL {:if(infoLenguaje[3]==null){
+                                                                                if(num!=null){
+                                                                                    infoLenguaje[3]=num;
+                                                                                 }
+                                                                              }else{
+                                                                                mostrarAtributoRepetido("Lanzamiento",((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);  
+                                                                                }:}
+			|extension dosPuntos Cadena:cad puntoYComa INFO_NO_OBL {:if(infoLenguaje[4]==null){
+                                                                                if(cad!=null){
+                                                                                    infoLenguaje[4]=cad;
+                                                                                 }
+                                                                              }else{
+                                                                                mostrarAtributoRepetido("Extension",((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);  
+                                                                                }:}
 			|;
-CADENA_ESPACIOS ::= Cadena Cadena
-                    |Cadena;
+CADENA_ESPACIOS ::= Cadena:cad CADENA_ESPACIOS:cads{:String str = (String)cad+" "+(String)cads;
+                                                         RESULT=str;:}
+                    |Cadena:cad  {:RESULT= cad;:};
 FUENTE		::= Fuente;
-EXPRESIONES     ::= Cadena igual EXP puntoYComa EXPRESIONES
-                        | ampersand igual EXP puntoYComa EXPRESIONES
-			|;
-EXP             ::= EXPRESION_OP;
+EXPRESIONES     ::= Cadena:cad igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expresion exp= new Expresion((EstadoAVL)ex,(String)cad);
+                                                                                ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
+                                                                                expresiones.add(0,exp);
+                                                                                RESULT=expresiones;:}
+                        | ampersand igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expresion exp= new Expresion((EstadoAVL)ex,true);
+                                                                                ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
+                                                                                expresiones.add(0,exp);
+                                                                                RESULT=expresiones;:}
+			|{:RESULT= new ArrayList<>();:};
+EXP             ::= EXPRESION_OP:ex {:RESULT=ex;:};
 
-SALTOS 		::= blanco
-			|saltoDeLinea
-			|tab;
-EXPRESION_OP    ::= EXPRESION EXPRESION_OP
-                        | EXPRESION op EXPRESION_OP
-                        |EXPRESION;
-EXPRESION	::=   AGRUPACION_A EXPRESION_OP AGRUPACION_C EX 
-			|numeros EX
-			|letras EX
-			|SALTOS 
-			|Cadena
-                        |comillas STR comillas;
-STR             ::= Cadena 
-                    |SALTOS 
-                    |EX
-                    |AGRUPACION_A
-                    |AGRUPACION_C;
-EX 		::= asterisco
-			|qMark
-			|suma
+SALTOS 		::= blanco{:RESULT="\b";:}
+			|saltoDeLinea {:RESULT="\n";:}
+			|tab {:RESULT="\t";:};
+EXPRESION_OP    ::= EXPRESION_OP:estado2 EXPRESION:estado1 {:EstadoAVL estadoNuevo = new EstadoAVL((EstadoAVL)estado2,(EstadoAVL)estado1,new Operacion(Operacion.CONCATENACION));
+                                                            RESULT=estadoNuevo;:}
+                        | EXPRESION_OP:estado2 op EXPRESION:estado1  {:EstadoAVL estadoNuevo = new EstadoAVL((EstadoAVL)estado2,(EstadoAVL)estado1,new Operacion(Operacion.O));
+                                                            RESULT=estadoNuevo;:}
+                        |EXPRESION:estado{:RESULT =estado;:};
+EXPRESION	::=   AGRUPACION_A EXPRESION_OP:estado1 AGRUPACION_C EX:ex {:EstadoAVL estado=null;
+                                                                            if(ex!=null){
+                                                                                estado=new EstadoAVL((EstadoAVL)estado1,new Operacion((Integer)ex));
+                                                                                RESULT=estado;
+                                                                            }else{
+                                                                                RESULT=(EstadoAVL)estado1;
+                                                                            }:}
+			|numeros EX:ex {:EstadoAVL estado=new EstadoAVL( nuemroDeNodo,true,false,null);
+                                                                        numeroDeNodo++;
+
+                                                                            if(ex!=null){
+                                                                              estado.setOperacion(new Operacion((Integer)ex));  
+                                                                            }
+                                                                            RESULT=estado;:}
+			|letras EX:ex {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,true,null);
+                                                nuemroDeNodo++;
+                                                                            if(ex!=null){
+                                                                              estado.setOperacion(new Operacion((Integer)ex));  
+                                                                            }
+                                                                            RESULT=estado;:}
+			|SALTOS:sal  {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,false,(String)sal);
+                                        nuemroDeNodo++;
+                                                                            RESULT=estado;:}
+			|Cadena:cad {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,false,(String)cad);
+                                numeroDeNodo++;
+                                                                            RESULT=estado;:}
+                        |comillas STR:cad comillas EX:ex {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,false,(String)cad);
+                                                            nuemroDeNodo++;
+                                                                            if(ex!=null){
+                                                                              estado.setOperacion(new Operacion((Integer)ex));  
+                                                                            }
+                                                                            RESULT=estado;:};
+STR             ::= Cadena:cad {:RESULT=cad;:}
+                    |SALTOS:sal {:RESULT=sal;:}
+                    |EX:ex {:if(ex!=null){
+                                switch ((Integer)ex) {
+                                    case Operacion.CERO_O_MAS_VECES:
+                                        RESULT="*";
+                                    break;
+                                    case Operacion.VENIR_O_NO:
+                                        RESULT="?";
+                                    break;
+                                    case Operacion.UNA_O_MAS_VECES:
+                                        RESULT="+";
+                                    break;
+                                    default:
+                                        throw new AssertionError();
+                                    }
+                         }:}
+                    |AGRUPACION_A:ag {:RESULT=ag;:}
+                    |AGRUPACION_C:ag {:RESULT=ag;:};
+EX 		::= asterisco{:RESULT=Operacion.CERO_O_MAS_VECES;:}
+			|qMark {:RESULT=Operacion.VENIR_O_NO;:}
+			|suma{:RESULT=Operacion.UNA_O_MAS_VECES;:}
 			|;
-AGRUPACION_A    ::= parentesisA
-                    |corcheteA;
-AGRUPACION_C    ::= parentesisC
-                    |corcheteC;
+AGRUPACION_A    ::= parentesisA {:RESULT="(";:}
+                    |corcheteA {:RESULT="[";:};
+AGRUPACION_C    ::= parentesisC {:RESULT=")";:}
+                    |corcheteC {:RESULT="]";:};
 SIMBOLOS        ::= sTerminal CADENAS:cads puntoYComa SIMBOLOS{:ArrayList<String> nombres=(ArrayList<String>)cads;
                                                                     for (int i = 0; i < nombres.size(); i++) {
                                                                         if(!asl.tablaDeSimbolos.verificarExistencia(nombres.get(i),TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){

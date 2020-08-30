@@ -19,10 +19,12 @@ public class TablaLR {
     private Accion[][] acciones;
     private ArrayList<Simbolo> simbolosExistentes;
     private ArrayList<Produccion> produccions;
+    private ArrayList<Estado> estado;
     
     public TablaLR(ArrayList<Estado> estados,ArrayList<Simbolo> simbolosExistentes,ArrayList<Produccion> produccions) {
         acciones= new Accion[estados.size()][simbolosExistentes.size()+1];
         this.simbolosExistentes=simbolosExistentes;
+        this.estado=estados;
         ordenarSimbolosExistentes();
         this.produccions=produccions;
         agregarAcciones(estados);
@@ -44,7 +46,38 @@ public class TablaLR {
         }
 
     }
+
+    public ArrayList<Estado> getEstado() {
+        return estado;
+    }
     
+    public Object[] obtenerSimbolosParaTabla(){
+        Object[] objetos= new Object[simbolosExistentes.size()+1];
+        objetos[0]="";
+        for (int i = 0; i < simbolosExistentes.size(); i++) {
+            objetos[i+1]=simbolosExistentes.get(i).getNombre();
+        }
+        return objetos;
+    }
+
+    public Accion[][] getAcciones() {
+        return acciones;
+    }
+    
+    public Object[][] obtenerDatos(){
+        Object[][] objetos= new Object[estado.size()][simbolosExistentes.size()+1];
+        
+        for (int i = 0; i < estado.size(); i++) {
+            objetos[i][0]=(i+1);
+        }for (int i = 0; i < acciones.length; i++) {
+            for (int j = 0; j < acciones[i].length; j++) {
+                if (acciones[i][j]!=null) {
+                    objetos[i][j+1]=acciones[i][j].toString();
+                }
+            }
+        }
+        return objetos;
+    }
     public void agregarAcciones(ArrayList<Estado> estados){
         for (int i = 0; i < estados.size(); i++) {
             for (int j = 0; j < estados.get(i).getConecciones().size(); j++) {

@@ -44,6 +44,10 @@ public class ManejadorEntrada {
                     asl.setTablaDeSimbolos(tds);
                     asl.setFrame(pc);
                     asl.parse();
+                    Lenguaje nuevo = asl.cdl.getLenguaje();
+                    if (nuevo!=null) {
+                        pc.getControlLenguajes().addLenguaje(nuevo);
+                    }
                     
                 }else{
                     TextoDeAcciones.appendToPane(pc.getjTxtErrores(),"Secciones insuficientes del archivo (.len)", Color.red, true);

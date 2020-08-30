@@ -163,7 +163,7 @@ public class EleccionDeLenguaje extends javax.swing.JDialog {
      }else{
          String[] nombres = new String[lengujaes.size()];
          for (int i = 0; i < lengujaes.size(); i++) {
-             nombres[i]= lengujaes.get(i).toString();
+             nombres[i]= lengujaes.get(i).getNombre();
          }
          list.setListData(nombres);
 

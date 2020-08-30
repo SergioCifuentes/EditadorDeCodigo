@@ -23,5 +23,4 @@ public class Accion {
     public Integer getNumeroDeAccion() {
         return numeroDeAccion;
     }
-    
 }

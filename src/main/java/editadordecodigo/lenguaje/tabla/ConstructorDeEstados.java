@@ -58,6 +58,10 @@ public class ConstructorDeEstados {
         
     }
 
+    public TablaLR getTablaLR() {
+        return tablaLR;
+    }
+
     public Estado cerradura(ArrayList<ProduccionEstado> produccion) {
         ArrayList<ProduccionEstado> pe = new ArrayList<>();
         pe.addAll(produccion);

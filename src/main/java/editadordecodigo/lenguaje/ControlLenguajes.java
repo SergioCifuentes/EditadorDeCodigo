@@ -17,13 +17,18 @@ public class ControlLenguajes {
     public ControlLenguajes() {
         lenguajes= new ArrayList<>();
     }
-    public void cargarPrueba(){
-        lenguajes.add(new Lenguaje("java", "11","Microsystems", "1996", ".java"));
-        lenguajes.add(new Lenguaje("c++", "17","Bjarne Stroustrup", "1983", ".cc"));
-        lenguajes.add(new Lenguaje("python", "3.8.3","Guido van Rossum", "1970", ".py"));
-    }
+    
 
     public ArrayList<Lenguaje> getLenguajes() {
         return lenguajes;
+    }
+    
+    public void addLenguaje(Lenguaje lenguaje){
+        lenguajes.add(lenguaje);
+    }
+
+    public void cargarPrueba() {
+       lenguajes.add(new Lenguaje("Java", "1", "Juan", "1235", ".java"));
+       lenguajes.add(new Lenguaje("C++", "2", "Jose", "1235", ".cc"));
     }
 }

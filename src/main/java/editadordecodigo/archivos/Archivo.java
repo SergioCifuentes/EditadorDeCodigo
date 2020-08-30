@@ -7,18 +7,20 @@ package editadordecodigo.archivos;
 
 import editadordecodigo.lenguaje.Lenguaje;
 import java.io.File;
+import javax.swing.JTextPane;
 
 /**
  *
  * @author sergio
  */
-public class Archivo {
+public class Archivo extends JTextPane{
     private String nombre;
     private Lenguaje lenguaje;
     private File ubicacion;
 
 
     public Archivo(String nombre, Lenguaje lenguaje, File ubicacion) {
+        
         this.nombre = nombre;
         this.lenguaje = lenguaje;
         this.ubicacion = ubicacion;

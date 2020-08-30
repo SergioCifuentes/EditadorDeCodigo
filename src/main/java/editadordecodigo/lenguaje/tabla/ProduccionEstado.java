@@ -64,6 +64,14 @@ public class ProduccionEstado {
         
         this.siguientes = siguientes;
     }
+    public void setSiguientes(ArrayList<Simbolo> siguientes,ArrayList<Simbolo> siguientes2) {
+        this.siguientes.addAll(siguientes);
+        for (int i = 0; i < siguientes2.size(); i++) {
+            if (!siguientes.contains(siguientes2.get(i))) {
+                siguientes.add(siguientes2.get(i));
+            }
+        }
+    }
 
     public boolean esProduccionAcabada(){
         return posicion==produccion.getProducciones().size();
