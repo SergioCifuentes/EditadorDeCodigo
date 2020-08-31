@@ -24,7 +24,7 @@ public class ConstructorDeLenguaje {
     private ArrayList<Expresion> expresiones;
     private ControladorAfd controladorAfd;
 
-    public ConstructorDeLenguaje(Lenguaje lenguaje,ArrayList<Simbolo> simbolos,ArrayList<Produccion> produccions,ArrayList<Expresion> raizes,int numeroDeSim) {
+    public ConstructorDeLenguaje(Lenguaje lenguaje,ArrayList<Simbolo> simbolos,ArrayList<Produccion> produccions,ArrayList<Expresion> raizes,ArrayList<EstadoAVL> sim) {
         expresiones=raizes;
         this.lenguaje = lenguaje;
         
@@ -33,7 +33,7 @@ public class ConstructorDeLenguaje {
             
             this.lenguaje.setTablaLR(constructorDeEstados.getTablaLR());
         }
-        ControladorAfd conAfd = new ControladorAfd(expresiones, numeroDeSim);
+        ControladorAfd conAfd = new ControladorAfd(expresiones, sim);
         conAfd.generarAFD();
         System.out.println("EXPRESIONES "+expresiones.size());
         for (int i = 0; i < expresiones.size(); i++) {

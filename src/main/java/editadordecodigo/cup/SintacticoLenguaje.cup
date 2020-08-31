@@ -51,7 +51,8 @@ import editadordecodigo.lenguaje.afd.*;
 
 action code {:
  private Object[] infoLenguaje = new Object[5];
-private int nuemroDeNodo=1;
+private ArrayList<EstadoAVL> sim = new ArrayList<>();
+private int numeroDeNodo=1;
 private String ejemplo;
 
      protected void mostrarAtributoRepetido(String atributo, Symbol s,AnalizadorSintacticoLenguaje asl) {
@@ -83,7 +84,7 @@ EXP, SALTOS,EXPRESION, EX, AGRUPACION_A, AGRUPACION_C,SIMBOLOS,CADENAS,GRAMATICA
 start with INICIO;
 
 INICIO 		::= INFO:info FUENTE  EXPRESIONES:estados separador SIMBOLOS separador GRAMATICA:gram {: if(info!=null){
-                                                                                                 asl.cdl= new ConstructorDeLenguaje((Lenguaje)info,asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram,(ArrayList<Expresion>)estados,numeroDeNodo);  
+                                                                                                 asl.cdl= new ConstructorDeLenguaje((Lenguaje)info,asl.tablaDeSimbolos.getSimbolos(),(ArrayList<Produccion>)gram,(ArrayList<Expresion>)estados,sim);  
                                                                                                     }:}
                                     
                     |error {::} ;
@@ -155,27 +156,38 @@ EXPRESION	::=   AGRUPACION_A EXPRESION_OP:estado1 AGRUPACION_C EX:ex {:EstadoAVL
                                                                             }else{
                                                                                 RESULT=(EstadoAVL)estado1;
                                                                             }:}
-			|numeros EX:ex {:EstadoAVL estado=new EstadoAVL( nuemroDeNodo,true,false,null);
+			|numeros EX:ex {:EstadoAVL estado=new EstadoAVL( numeroDeNodo,true,false,null);
+                                        sim.add(estado);
                                                                         numeroDeNodo++;
 
-                                                                            if(ex!=null){
-                                                                              estado.setOperacion(new Operacion((Integer)ex));  
-                                                                            }
+                                                                            if (ex != null) {
+                    
+                                                                         EstadoAVL estadoOP = new EstadoAVL(estado, new Operacion((Integer) ex));
+                                                                          RESULT =estadoOP;
+                                                                         }else{
+                                                                     RESULT = estado;
+                                                                     }:}
+			|letras EX:ex {:EstadoAVL estado=new EstadoAVL(numeroDeNodo,false,true,null);
+                                        sim.add(estado);
+                                                numeroDeNodo++;
+                                                                            if (ex != null) {
+                    
+                                                                            EstadoAVL estadoOP = new EstadoAVL(estado, new Operacion((Integer) ex));
+                                                                                RESULT =estadoOP;
+                                                                                                }else{
+                                                                                         RESULT = estado;
+                                                                                         }:}
+			|SALTOS:sal  {:EstadoAVL estado=new EstadoAVL(numeroDeNodo,false,false,(String)sal);
+                                    sim.add(estado);
+                                        numeroDeNodo++;
                                                                             RESULT=estado;:}
-			|letras EX:ex {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,true,null);
-                                                nuemroDeNodo++;
-                                                                            if(ex!=null){
-                                                                              estado.setOperacion(new Operacion((Integer)ex));  
-                                                                            }
-                                                                            RESULT=estado;:}
-			|SALTOS:sal  {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,false,(String)sal);
-                                        nuemroDeNodo++;
-                                                                            RESULT=estado;:}
-			|Cadena:cad {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,false,(String)cad);
+			|Cadena:cad {:EstadoAVL estado=new EstadoAVL(numeroDeNodo,false,false,(String)cad);
+                            sim.add(estado);
                                 numeroDeNodo++;
                                                                             RESULT=estado;:}
-                        |comillas STR:cad comillas EX:ex {:EstadoAVL estado=new EstadoAVL(nuemroDeNodo,false,false,(String)cad);
-                                                            nuemroDeNodo++;
+                        |comillas STR:cad comillas EX:ex {:EstadoAVL estado=new EstadoAVL(numeroDeNodo,false,false,(String)cad);
+                                                            sim.add(estado);
+                                                            numeroDeNodo++;
                                                                             if(ex!=null){
                                                                               estado.setOperacion(new Operacion((Integer)ex));  
                                                                             }

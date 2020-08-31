@@ -16,39 +16,58 @@ public class ControladorAfd {
     private ArrayList<Expresion> expresiones;
     private EstadoAVL principal;
     private Integer numeroTerminal;
+    private TablaDeSiguientes tablaDeSiguientes;
+    private TablaDeTransicion tablaDeTransicion;
+    private ArrayList<EstadoAVL> simbolos;
 
-    public ControladorAfd(ArrayList<Expresion> expresiones, int numero) {
+    public ControladorAfd(ArrayList<Expresion> expresiones, ArrayList<EstadoAVL> simbolos) {
         this.expresiones = expresiones;
-        
-        numeroTerminal=numero;
-        
+        this.simbolos = simbolos;
+        numeroTerminal = simbolos.size() + 1;
+
     }
-    
-    public void generarAFD(){
-        principal =genararPrincipal();
-            encontrarDatosDeArbol();
-         System.out.println(principal);
+
+    public void generarAFD() {
+        principal = genararPrincipal();
+        encontrarDatosDeArbol();
+        tablaDeSiguientes = new TablaDeSiguientes(principal, numeroTerminal);
+
+        principal.obternerSiguientes(tablaDeSiguientes);
+        for (int i = 0; i < tablaDeSiguientes.getTable().size(); i++) {
+            System.out.println("");
+            System.out.print(i + 1 + "::: ");
+            for (int j = 0; j < tablaDeSiguientes.getTable().get(i).size(); j++) {
+                System.out.print(tablaDeSiguientes.getTable().get(i).get(j));
+            }
+            System.out.println("");
+        }
+        System.out.println(principal);
+        EstadoAFD estadoAFD = new EstadoAFD(0, principal.getPrimeros());
+        tablaDeTransicion = new TablaDeTransicion(simbolos,tablaDeSiguientes,estadoAFD);
+        tablaDeTransicion.construirTabla();
+
     }
 
     private EstadoAVL genararPrincipal() {
-        EstadoAVL estadoPrincipal=null;
-        
+        EstadoAVL estadoPrincipal = null;
+
         if (expresiones.size() > 0) {
             if (expresiones.size() > 1) {
                 EstadoAVL aux = unirEstados(expresiones.get(0).getRaiz(), expresiones.get(1).getRaiz());
                 for (int i = 2; i < expresiones.size(); i++) {
-                    
+
                     aux = unirEstados(aux, expresiones.get(i).getRaiz());
                 }
-                estadoPrincipal=aux;
-            }else{
-                estadoPrincipal=expresiones.get(0).getRaiz();
-                        
+                estadoPrincipal = aux;
+            } else {
+                estadoPrincipal = expresiones.get(0).getRaiz();
+
             }
+
             return agregarTerminal(estadoPrincipal);
-            
+
         }
-        
+
         return null;
 
     }
@@ -57,11 +76,13 @@ public class ControladorAfd {
         return new EstadoAVL(estado1, estado2, new Operacion(Operacion.O));
 
     }
+
     private EstadoAVL agregarTerminal(EstadoAVL estado1) {
-        return new EstadoAVL(estado1,new EstadoAVL(numeroTerminal, true),new Operacion(Operacion.CONCATENACION));
+        return new EstadoAVL(estado1, new EstadoAVL(numeroTerminal, true), new Operacion(Operacion.CONCATENACION));
 
     }
-    private void encontrarDatosDeArbol(){
+
+    private void encontrarDatosDeArbol() {
         //Anulables
         principal.verificarAnulable();
         //Primeros

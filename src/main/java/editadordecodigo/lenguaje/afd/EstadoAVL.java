@@ -13,10 +13,11 @@ import java.util.Collections;
  * @author sergio
  */
 public class EstadoAVL {
-
+    
     private EstadoAVL estado1;
     private EstadoAVL estado2;
     private Operacion operacion;
+    
     private boolean numeros;
     private boolean letras;
     private String cadena;
@@ -25,7 +26,7 @@ public class EstadoAVL {
     private Boolean anulable;
     private ArrayList<Integer> primeros = new ArrayList<>();
     private ArrayList<Integer> ultimos = new ArrayList<>();
-
+    
     public EstadoAVL(int numero, boolean numeros, boolean letras, String cadena) {
         primeros.add(numero);
         ultimos.add(numero);
@@ -34,9 +35,37 @@ public class EstadoAVL {
         this.numeros = numeros;
         this.letras = letras;
         this.cadena = cadena;
-
+        
     }
 
+    public Integer getNumero() {
+        return numero;
+    }
+
+    public boolean isNumeros() {
+        return numeros;
+    }
+
+    public boolean isLetras() {
+        return letras;
+    }
+
+    public String getCadena() {
+        return cadena;
+    }
+
+    public boolean isTerminal() {
+        return terminal;
+    }
+    
+    public ArrayList<Integer> getPrimeros() {
+        return primeros;
+    }
+    
+    public ArrayList<Integer> getUltimos() {
+        return ultimos;
+    }
+    
     public EstadoAVL(int numero, boolean terminal) {
         primeros.add(numero);
         ultimos.add(numero);
@@ -44,21 +73,21 @@ public class EstadoAVL {
         this.terminal = terminal;
         this.numero = numero;
     }
-
+    
     public boolean verificarAnulable() {
         if (anulable == null) {
             if (estado2 != null) {
-
+                
                 switch (operacion.tipo) {
                     case Operacion.CONCATENACION:
-
+                        
                         anulable = (estado1.verificarAnulable() & estado2.verificarAnulable());
                         return anulable;
-
+                    
                     case Operacion.O:
                         anulable = (estado1.verificarAnulable() | estado2.verificarAnulable());
                         return anulable;
-
+                    
                     default:
                         throw new AssertionError();
                 }
@@ -69,8 +98,8 @@ public class EstadoAVL {
                         anulable = true;
                         return anulable;
                     case Operacion.UNA_O_MAS_VECES:
-
-                        anulable = verificarAnulable();
+                        
+                        anulable = estado1.verificarAnulable();
                         return anulable;
                     case Operacion.VENIR_O_NO:
                         estado1.verificarAnulable();
@@ -80,7 +109,7 @@ public class EstadoAVL {
                         throw new AssertionError();
                 }
             } else {
-
+                
                 anulable = estado1.verificarAnulable();
                 return anulable;
             }
@@ -89,83 +118,139 @@ public class EstadoAVL {
         }
     }
 
+    public EstadoAVL getEstado1() {
+        return estado1;
+    }
+    
+    public void obternerSiguientes(TablaDeSiguientes tabla) {
+        if (operacion != null) {
+            System.out.println("OPPPPPPPPPPPP"+operacion.getTipo()+estado1.primeros);
+            if (operacion.getTipo() == Operacion.CONCATENACION) {
+                System.out.println("CON "+estado1.ultimos+"  <- "+estado2.primeros);
+                for (int i = 0; i < estado1.ultimos.size(); i++) {
+                    for (int j = 0; j < estado2.primeros.size(); j++) {
+                        if (!tabla.getTable().get(estado1.ultimos.get(i)-1).contains(estado2.primeros.get(j))) {
+                            tabla.getTable().get(estado1.ultimos.get(i)-1).add(estado2.primeros.get(j));
+                            Collections.sort(tabla.getTable().get(estado1.ultimos.get(i)-1));
+                        }
+                    }
+                    
+                }
+            } else if (operacion.getTipo() == Operacion.CERO_O_MAS_VECES||operacion.getTipo() == Operacion.UNA_O_MAS_VECES) {
+                System.out.println("OOOP "+estado1.ultimos+"  <- "+estado1.primeros);
+                for (int i = 0; i < estado1.ultimos.size(); i++) {
+                    for (int j = 0; j < estado1.primeros.size(); j++) {
+                        
+                        if (!tabla.getTable().get(estado1.ultimos.get(i)-1).contains(estado1.primeros.get(j))) {
+                            tabla.getTable().get(estado1.ultimos.get(i)-1).add(estado1.primeros.get(j));
+                            Collections.sort(tabla.getTable().get(estado1.ultimos.get(i)-1));
+                        }
+                    }
+                }
+            } 
+           
+            estado1.obternerSiguientes(tabla);
+            if (estado2 != null) {
+                estado2.obternerSiguientes(tabla);
+            }
+        }
+    }
+    
     public ArrayList<Integer> verificarPrimeros() {
         if (primeros.isEmpty()) {
             if (estado2 != null) {
-
+                
                 switch (operacion.tipo) {
                     case Operacion.CONCATENACION:
                         if (estado1.anulable) {
-                            primeros=agregarSinRepetir(estado1.verificarPrimeros(),estado2.verificarPrimeros());
+                            primeros = agregarSinRepetir(estado1.verificarPrimeros(), estado2.verificarPrimeros());
                         } else {
-                            primeros=estado1.verificarPrimeros();
+                            primeros = estado1.verificarPrimeros();
+                            estado2.verificarPrimeros();
                         }
                         return primeros;
                     case Operacion.O:
-                        primeros=agregarSinRepetir(estado1.verificarPrimeros(),estado2.verificarPrimeros());
+                        primeros = agregarSinRepetir(estado1.verificarPrimeros(), estado2.verificarPrimeros());
                         return primeros;
                     default:
                         throw new AssertionError();
                 }
             } else if (operacion != null) {
-                primeros=estado1.verificarPrimeros();
+                primeros = estado1.verificarPrimeros();
                 return primeros;
             } else {
-                primeros  = estado1.verificarPrimeros();
+                primeros = estado1.verificarPrimeros();
                 return primeros;
             }
         } else {
             return primeros;
         }
     }
-        public ArrayList<Integer> verificarUltimos() {
-        if (ultimos.isEmpty()) {
-            if (estado2 != null) {
 
+    public Operacion getOperacion() {
+        return operacion;
+    }
+    
+    public ArrayList<Integer> verificarUltimos() {
+        if (ultimos.isEmpty()) {
+            System.out.println("SOSOSOSOSOS"+estado2);
+            if (operacion!=null) {
+                System.out.println(operacion.tipo);
+            }
+            System.out.println("=======");
+            if (estado2 != null) {
+                
                 switch (operacion.tipo) {
                     case Operacion.CONCATENACION:
                         if (estado2.anulable) {
-                            ultimos=agregarSinRepetir(estado1.verificarUltimos(),estado2.verificarUltimos());
+                            ultimos = agregarSinRepetir(estado1.verificarUltimos(), estado2.verificarUltimos());
                         } else {
-                            ultimos=estado2.verificarPrimeros();
+                            ultimos = estado2.verificarPrimeros();
+                            estado1.verificarUltimos();
                         }
                         return ultimos;
                     case Operacion.O:
-                        ultimos=agregarSinRepetir(estado1.verificarUltimos(),estado2.verificarUltimos());
+                        ultimos = agregarSinRepetir(estado1.verificarUltimos(), estado2.verificarUltimos());
+                        System.out.println(estado1.ultimos+"   "+estado2.ultimos);
+                        System.out.println("UUUUUUUUUUUUUUUUUUUUUU "+ultimos);
                         return ultimos;
                     default:
                         throw new AssertionError();
                 }
             } else if (operacion != null) {
-                ultimos=estado1.verificarUltimos();
+                
+                ultimos = estado1.verificarUltimos();
+                System.out.println("QQQQQQQQ "+operacion.tipo+" "+estado1.primeros+"  "+estado1.ultimos);
                 return ultimos;
             } else {
-                ultimos  = estado1.verificarUltimos();
+                ultimos = estado1.verificarUltimos();
                 return ultimos;
             }
         } else {
             return ultimos;
         }
     }
-
-    public ArrayList<Integer> agregarSinRepetir(ArrayList<Integer> c1,ArrayList<Integer> c2){
+    
+    public ArrayList<Integer> agregarSinRepetir(ArrayList<Integer> c1, ArrayList<Integer> c2) {
+        ArrayList<Integer> aux = new ArrayList<>();
+        aux.addAll(c1);
         for (int i = 0; i < c2.size(); i++) {
-            if (!c1.contains(c2.get(i))) {
-                c1.add(c2.get(i));
+            if (!aux.contains(c2.get(i))) {
+                aux.add(c2.get(i));
             }
         }
-        Collections.sort(c1);
-        return c1;
+        Collections.sort(aux);
+        return aux;
     }
     
     public void setOperacion(Operacion operacion) {
         this.operacion = operacion;
     }
-
+    
     @Override
     public String toString() {
         String str = "<";
-
+        
         if (numero != null) {
             str += "NUM:" + numero + " ";
         }
@@ -177,10 +262,10 @@ public class EstadoAVL {
             str += cadena;
         } else if (terminal) {
             str += "TERMINAL";
-
+            
         } else {
             str += estado1.toString();
-
+            
         }
         str += " ANU:" + anulable + " ";
         if (anulable == null) {
@@ -211,16 +296,16 @@ public class EstadoAVL {
         str += ">";
         return str;
     }
-
+    
     public EstadoAVL(EstadoAVL estado1, Operacion operacion) {
         this.estado1 = estado1;
         this.operacion = operacion;
     }
-
+    
     public EstadoAVL(EstadoAVL estado1, EstadoAVL estado2, Operacion operacion) {
         this.estado1 = estado1;
         this.estado2 = estado2;
         this.operacion = operacion;
     }
-
+    
 }
