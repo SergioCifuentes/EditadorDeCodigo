@@ -5,8 +5,10 @@
  */
 package editadordecodigo.compilador;
 
+import editadordecodigo.compilador.analisadorSintactico.AnalizadorSintactico;
 import editadordecodigo.lenguaje.Lenguaje;
 import editadordecodigo.ui.Principal;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,6 +20,7 @@ public class Compilador {
     private Principal principal;
     private int columnaActual=0;
     private int indiceFinal;
+    private AnalizadorSintactico as;
     public Compilador(Lenguaje lenguaje, String code,Principal principal) {
         this.lenguaje = lenguaje;
         this.code = code;
@@ -26,9 +29,12 @@ public class Compilador {
     public void compilar(){
         indiceFinal=0;
         AnalizadorLexico al = new AnalizadorLexico(lenguaje.getEstadoInical(),this);
-        AnalizadorSintactico as = new AnalizadorSintactico(al, lenguaje,principal);
+         as = new AnalizadorSintactico(al, lenguaje,principal);
         as.start();
         
+    }
+    public ArrayList<String[]> obtenerPila(){
+        return as.obtenerPila();
     }
     public void regresarindiceFinal(){
         indiceFinal--;
@@ -60,5 +66,7 @@ public class Compilador {
     public Principal getPrincipal() {
         return principal;
     }
-    
+    public String obtenerEntradaCompleta(){
+        return code.substring(indiceFinal);
+    }
 }

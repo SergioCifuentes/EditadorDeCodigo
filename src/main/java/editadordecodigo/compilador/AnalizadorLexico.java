@@ -23,6 +23,8 @@ public class AnalizadorLexico {
     private ArrayList<RutasDeEstados> rutas;
     private int linea = 1;
     private String cadenaFormandose;
+    
+    
 
     public AnalizadorLexico(EstadoAFD inicial, Compilador compi) {
         this.inicial = inicial;
@@ -31,8 +33,13 @@ public class AnalizadorLexico {
 
     }
 
-    public Token analizarSiguiente() {
+    public String getEntradaCompleta() {
+        return compi.obtenerEntradaCompleta();
+    }
+    
 
+    public Token analizarSiguiente() {
+        
         cadenaFormandose = "";
         rutas = new ArrayList<>();
         while (true) {
@@ -96,13 +103,14 @@ public class AnalizadorLexico {
         }
         return null;
     }
+    
 
     public String obtenerMensajeErrorSiNoTerminal(String cadena) {
         String strInput = "";
         strInput += cadena;
         for (int i = 0; i < rutas.size(); i++) {
             System.out.println("RUTA ERROR " + rutas.get(i).getConecciones().get(rutas.get(i).getConecciones().size() - 1));
-            String str = rutas.get(i).getConecciones().get(rutas.size() - 1).getTokenEsperado();
+            String str = rutas.get(i).getConecciones().get(rutas.get(i).getConecciones().size() - 1).getTokenEsperado();
             if (str != null) {
                 return "ERROR LEXICO para " + strInput + " se esperaba " + str;
             }

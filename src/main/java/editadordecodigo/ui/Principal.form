@@ -113,6 +113,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Pila"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuPilaActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="menuPila.setEnabled(false);"/>
               </AuxValues>

@@ -28,7 +28,7 @@ public class Produccion {
     }
     @Override
     public String toString(){
-            String str = "PP::"+noTerminal.getNombre()+"  ";
+            String str = noTerminal.getNombre()+" -> ";
         for (int i = 0; i <producciones.size(); i++) {
             str+=producciones.get(i).getNombre()+" ";
         }

@@ -45,6 +45,7 @@ import editadordecodigo.lenguaje.afd.*;
             System.out.println("\t \tFila: "+ fila+"\n");
             System.out.println("\t \tColumna: "+ columna+"\n");
         } catch (Exception ex) {
+            
          }
     }
 :}

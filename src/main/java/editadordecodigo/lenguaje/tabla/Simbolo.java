@@ -47,6 +47,11 @@ public class Simbolo {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "Simbolo{" + "nombre=" + nombre + '}';
+    }
+
  
     
 }

@@ -27,6 +27,7 @@ public class Principal extends javax.swing.JFrame {
     private NumeroLinea nl;
     private ControlLenguajes cl ;
     private ManejadorDeArchivos mda;
+    private Compilador compi;
     /**
      * Creates new form Principal
      */
@@ -176,6 +177,11 @@ public class Principal extends javax.swing.JFrame {
 
         menuPila.setText("Pila");
         menuPila.setEnabled(false);
+        menuPila.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuPilaActionPerformed(evt);
+            }
+        });
         jMenu4.add(menuPila);
 
         jMenuBar1.add(jMenu4);
@@ -252,9 +258,17 @@ public class Principal extends javax.swing.JFrame {
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         Archivo archivoACompilar =mda.getArchivos().get(tabs.getSelectedIndex());
-        Compilador comp = new Compilador(archivoACompilar.getLenguaje(),archivoACompilar.getText(), this);
-        comp.compilar();
+        compi = new Compilador(archivoACompilar.getLenguaje(),archivoACompilar.getText(), this);
+        compi.compilar();
+        menuPila.setEnabled(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void menuPilaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPilaActionPerformed
+        if (compi!=null) {
+            Pila pila = new Pila(compi.obtenerPila());
+            pila.setVisible(true);
+        }
+    }//GEN-LAST:event_menuPilaActionPerformed
 
     /**
      * @param args the command line arguments

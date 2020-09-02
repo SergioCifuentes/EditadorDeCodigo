@@ -25,6 +25,11 @@ public class Token {
         this.cadena = cadena;
 
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+    
     
         public Token(int numero, boolean terminal) {
         this.numero = numero;

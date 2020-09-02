@@ -6,6 +6,7 @@
 package editadordecodigo.lenguaje.tabla;
 
 import editadordecodigo.lenguaje.tabla.Acciones.Accion;
+import editadordecodigo.lenguaje.tabla.Acciones.Aceptacion;
 import editadordecodigo.lenguaje.tabla.Acciones.GoTo;
 import editadordecodigo.lenguaje.tabla.Acciones.Reduce;
 import editadordecodigo.lenguaje.tabla.Acciones.Shift;
@@ -20,6 +21,14 @@ public class TablaLR {
     private ArrayList<Simbolo> simbolosExistentes;
     private ArrayList<Produccion> produccions;
     private ArrayList<Estado> estado;
+
+    public ArrayList<Simbolo> getSimbolosExistentes() {
+        return simbolosExistentes;
+    }
+
+    public ArrayList<Produccion> getProduccions() {
+        return produccions;
+    }
     
     public TablaLR(ArrayList<Estado> estados,ArrayList<Simbolo> simbolosExistentes,ArrayList<Produccion> produccions) {
         acciones= new Accion[estados.size()][simbolosExistentes.size()+1];
@@ -79,6 +88,7 @@ public class TablaLR {
         return objetos;
     }
     public void agregarAcciones(ArrayList<Estado> estados){
+         acciones[1][obtenerIndiceSimbolo(Simbolo.COMODIN)]=new Aceptacion(0);
         for (int i = 0; i < estados.size(); i++) {
             for (int j = 0; j < estados.get(i).getConecciones().size(); j++) {
                 Simbolo con=estados.get(i).getConecciones().get(j).getSimbolo();
