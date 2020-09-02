@@ -26,46 +26,83 @@ import javax.swing.JFileChooser;
  * @author sergio
  */
 public class ManejadorEntrada {
-    public static final String EXTENSION=".len";
-    public void cargarLenguaje(Principal pc){
+
+    public static final String EXTENSION = ".len";
+
+    public void cargarLenguaje(Principal pc) {
         JFileChooser jfc = new JFileChooser();
-        jfc.setDialogTitle("Seleccione El Archivo "+EXTENSION);
+        jfc.setDialogTitle("Seleccione El Archivo " + EXTENSION);
 
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jfc.showOpenDialog(pc);
         File file = jfc.getSelectedFile();
-        if (file != null&& file.getPath().contains(EXTENSION)) {
+        
+        if (file != null && file.getPath().contains(EXTENSION)) {
             try {
                 String str = obtenerCodigoFuente(file);
-                if (str!=null) {
-                    AnalizadorLexicoLenguaje all = new  AnalizadorLexicoLenguaje(new StringReader(str));
+                if (str != null) {
+                    AnalizadorLexicoLenguaje all = new AnalizadorLexicoLenguaje(new StringReader(str));
                     TablaDeSimbolos tds = new TablaDeSimbolos();
                     AnalizadorSintacticoLenguaje asl = new AnalizadorSintacticoLenguaje(all);
                     asl.setTablaDeSimbolos(tds);
                     asl.setFrame(pc);
                     asl.parse();
                     Lenguaje nuevo = asl.cdl.getLenguaje();
-                    if (nuevo!=null) {
+                    if (nuevo != null) {
                         pc.getControlLenguajes().addLenguaje(nuevo);
                     }
-                    
-                }else{
-                    TextoDeAcciones.appendToPane(pc.getjTxtErrores(),"Secciones insuficientes del archivo (.len)", Color.red, true);
+
+                } else {
+                    TextoDeAcciones.appendToPane(pc.getjTxtErrores(), "Secciones insuficientes del archivo (.len)", Color.red, true);
                 }
-               
+
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
-                 TextoDeAcciones.appendToPane(pc.getjTxtErrores(),"El archivo debe tener la extension (.len)", Color.red, true);
-               
+        } else {
+            TextoDeAcciones.appendToPane(pc.getjTxtErrores(), "El archivo debe tener la extension (.len)", Color.red, true);
+
         }
     }
-    
-    public String obtenerCodigoFuente(File file){
-        BufferedReader br=null;
+
+    //Test
+    public void cargarEjemplo(Principal pc) {
+        File file = new File("/home/sergio/AA/eje 2.len");
+        
+        if (file != null && file.getPath().contains(EXTENSION)) {
+            try {
+                String str = obtenerCodigoFuente(file);
+                if (str != null) {
+                    AnalizadorLexicoLenguaje all = new AnalizadorLexicoLenguaje(new StringReader(str));
+                    TablaDeSimbolos tds = new TablaDeSimbolos();
+                    AnalizadorSintacticoLenguaje asl = new AnalizadorSintacticoLenguaje(all);
+                    asl.setTablaDeSimbolos(tds);
+                    asl.setFrame(pc);
+                    asl.parse();
+                    Lenguaje nuevo = asl.cdl.getLenguaje();
+                    if (nuevo != null) {
+                        pc.getControlLenguajes().addLenguaje(nuevo);
+                    }
+
+                } else {
+                    TextoDeAcciones.appendToPane(pc.getjTxtErrores(), "Secciones insuficientes del archivo (.len)", Color.red, true);
+                }
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            TextoDeAcciones.appendToPane(pc.getjTxtErrores(), "El archivo debe tener la extension (.len)", Color.red, true);
+
+        }
+    }
+
+    public String obtenerCodigoFuente(File file) {
+        BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException ex) {
@@ -74,30 +111,29 @@ public class ManejadorEntrada {
         String str = "";
         int aux = 0;
         while (true) {
-            String linea=null;
+            String linea = null;
             try {
                 linea = br.readLine();
             } catch (IOException ex) {
                 Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (linea==null) {
+            if (linea == null) {
                 break;
-            }else if (linea.contains("%%")) {
-                
+            } else if (linea.contains("%%")) {
+
                 aux++;
-                if (aux==1||aux==2) {
-                    linea=linea.replaceAll("%%", "%%%");
+                if (aux == 1 || aux == 2) {
+                    linea = linea.replaceAll("%%", "%%%");
                 }
             }
-            str+=linea+"\n";
-           
-  
+            str += linea + "\n";
+
         }
-        if (aux==4) {
+        if (aux == 4) {
             return str;
-        }else{
+        } else {
             return null;
         }
-        
+
     }
 }

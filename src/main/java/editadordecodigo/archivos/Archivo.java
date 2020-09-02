@@ -17,6 +17,7 @@ public class Archivo extends JTextPane{
     private String nombre;
     private Lenguaje lenguaje;
     private File ubicacion;
+    
 
 
     public Archivo(String nombre, Lenguaje lenguaje, File ubicacion) {
@@ -25,6 +26,8 @@ public class Archivo extends JTextPane{
         this.lenguaje = lenguaje;
         this.ubicacion = ubicacion;
     }
+
+  
 
     
     public String getNombre() {

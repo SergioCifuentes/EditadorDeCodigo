@@ -16,12 +16,12 @@ public class TablaDeTransicion {
     private ArrayList<EstadoAVL> existentes;
     private ArrayList<EstadoAFD> estadosAFD;
     private TablaDeSiguientes tablaDeSiguientes;
-
+    private ArrayList<Expresion> expresions;
     private ArrayList<EstadoAVL> estados;
     private ArrayList<ArrayList<Integer>> simplificacion;
 
-    public TablaDeTransicion(ArrayList<EstadoAVL> estados, TablaDeSiguientes tablaDeSiguientes, EstadoAFD estadoInicio) {
-
+    public TablaDeTransicion(ArrayList<EstadoAVL> estados, TablaDeSiguientes tablaDeSiguientes, EstadoAFD estadoInicio, ArrayList<Expresion> expresiones) {
+        this.expresions = expresiones;
         this.tablaDeSiguientes = tablaDeSiguientes;
         this.estados = estados;
         estadosAFD = new ArrayList<>();
@@ -29,8 +29,11 @@ public class TablaDeTransicion {
         existentes = new ArrayList<>();
 
         obtenerExistentes(estados);
-        
 
+    }
+
+    public ArrayList<EstadoAFD> getEstadosAFD() {
+        return estadosAFD;
     }
 
     public void construirTabla() {
@@ -39,12 +42,13 @@ public class TablaDeTransicion {
 
         }
         for (int i = 0; i < estadosAFD.size(); i++) {
-            System.out.println("==== "+estadosAFD.get(i).getNumero()+"====");
-            System.out.println("TERMINAL "+estadosAFD.get(i).isTerminal());
-            for (int j = 0; j <estadosAFD.get(i).getConeccionesAFDs().size(); j++) {
+            System.out.println("==== " + estadosAFD.get(i).getNumero() + "====");
+            System.out.println("TERMINAL " + estadosAFD.get(i).isTerminal());
+            for (int j = 0; j < estadosAFD.get(i).getConeccionesAFDs().size(); j++) {
                 System.out.println(estadosAFD.get(i).getConeccionesAFDs().get(j));
             }
         }
+      
 
     }
 
@@ -61,21 +65,21 @@ public class TablaDeTransicion {
                 }
                 if (estadoExi == null) {
                     System.out.println("NULL;NUEVO");
-                    EstadoAFD estadoNuevo = new EstadoAFD(estadosAFD.size() , num);
+                    EstadoAFD estadoNuevo = new EstadoAFD(estadosAFD.size(), num);
                     estadosAFD.add(estadoNuevo);
-                    SimbolosAFD sim = crearSimbolo(estado.getNumerosDeSubConjunto().get(i));
-                    ConeccionesAFD cafd = new ConeccionesAFD(estadoNuevo, sim);
+                    Token sim = crearSimbolo(estado.getNumerosDeSubConjunto().get(i));
+                    ConeccionesAFD cafd = new ConeccionesAFD(estadoNuevo, sim, nombreToken(estado.getNumerosDeSubConjunto().get(i)));
                     estado.getConeccionesAFDs().add(cafd);
 
                 } else {
                     System.out.println("EXISTE");
-                    SimbolosAFD sim = crearSimbolo(estado.getNumerosDeSubConjunto().get(i));
+                    Token sim = crearSimbolo(estado.getNumerosDeSubConjunto().get(i));
 
-                    ConeccionesAFD cafd = new ConeccionesAFD(estadoExi, sim);
+                    ConeccionesAFD cafd = new ConeccionesAFD(estadoExi, sim, nombreToken(estado.getNumerosDeSubConjunto().get(i)));
                     estado.getConeccionesAFDs().add(cafd);
 
                 }
-            }else{
+            } else {
                 estado.setTerminal(true);
             }
 
@@ -83,13 +87,29 @@ public class TablaDeTransicion {
 
     }
 
-    private SimbolosAFD crearSimbolo(int numeroDeEstado) {
+    private String nombreToken(int numeroEstado) {
+        for (int i = 0; i < expresions.size(); i++) {
+            if (expresions.get(i).getNumrosDeEstado().contains(numeroEstado)) {
+                return expresions.get(i).getNombre();
+            }
+
+        }
+        return null;
+    }
+
+    private Token crearSimbolo(int numeroDeEstado) {
+       
         for (int i = 0; i < estados.size(); i++) {
             if (estados.get(i).getNumero() == numeroDeEstado) {
                 if (estados.get(i).isTerminal()) {
-                    return new SimbolosAFD(numeroDeEstado, true);
+                    return new Token(numeroDeEstado, true);
                 } else {
-                    return new SimbolosAFD(numeroDeEstado, estados.get(i).isNumeros(), estados.get(i).isLetras(), estados.get(i).getCadena());
+                    for (int j = 0; j < expresions.size(); j++) {
+                        if (expresions.get(j).getNumrosDeEstado().contains(numeroDeEstado)) {
+                            return new Token(numeroDeEstado, estados.get(i).isNumeros(), estados.get(i).isLetras(), estados.get(i).getCadena(),expresions.get(j).getNombre());
+                        }
+                    }
+                    
                 }
             }
 

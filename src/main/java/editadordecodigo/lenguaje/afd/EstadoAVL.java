@@ -38,6 +38,10 @@ public class EstadoAVL {
         
     }
 
+    public EstadoAVL getEstado2() {
+        return estado2;
+    }
+
     public Integer getNumero() {
         return numero;
     }

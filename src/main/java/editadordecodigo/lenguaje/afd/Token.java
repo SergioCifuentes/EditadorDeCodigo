@@ -9,16 +9,16 @@ package editadordecodigo.lenguaje.afd;
  *
  * @author sergio
  */
-public class SimbolosAFD {
-
+public class Token {
+    private String nombre;
     private boolean numeros;
     private boolean letras;
     private String cadena;
     private Integer numero;
     private boolean terminal;
 
-    public SimbolosAFD(int numero, boolean numeros, boolean letras, String cadena) {
-        
+    public Token(int numero, boolean numeros, boolean letras, String cadena,String nombre) {
+        this.nombre=nombre;
         this.numero = numero;
         this.numeros = numeros;
         this.letras = letras;
@@ -26,7 +26,7 @@ public class SimbolosAFD {
 
     }
     
-        public SimbolosAFD(int numero, boolean terminal) {
+        public Token(int numero, boolean terminal) {
         this.numero = numero;
         this.terminal=terminal;
 
@@ -34,21 +34,9 @@ public class SimbolosAFD {
 
     @Override
     public String toString() {
-        String str="";
-        if (terminal) {
-            str+="TERMINAL";
-        }
-        if (numeros) {
-            str="NUMEROS";
-        }
-        if (letras) {
-            str+="LETRAS";
-        }
-        if (cadena!=null) {
-            str+=cadena;
-        }
+        
              
-        return str;
+        return nombre;
     }
 
     public boolean isNumeros() {

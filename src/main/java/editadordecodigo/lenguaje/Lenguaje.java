@@ -5,6 +5,7 @@
  */
 package editadordecodigo.lenguaje;
 
+import editadordecodigo.lenguaje.afd.EstadoAFD;
 import editadordecodigo.lenguaje.tabla.TablaLR;
 
 /**
@@ -18,6 +19,7 @@ public class Lenguaje {
     private String lanzamiento;
     private String extension;
     private TablaLR tablaLR;
+    private EstadoAFD estadoInical;
          
 
     public Lenguaje(String nombre, String version, String Autor, String lanzamiento, String Extension) {
@@ -30,6 +32,14 @@ public class Lenguaje {
 
     public TablaLR getTablaLR() {
         return tablaLR;
+    }
+
+    public EstadoAFD getEstadoInical() {
+        return estadoInical;
+    }
+
+    public void setEstadoInical(EstadoAFD estadoInical) {
+        this.estadoInical = estadoInical;
     }
     
     @Override

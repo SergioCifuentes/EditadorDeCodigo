@@ -5,6 +5,9 @@
  */
 package editadordecodigo.lenguaje.afd;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  *
  * @author sergio
@@ -13,16 +16,46 @@ public class Expresion {
     private EstadoAVL raiz;
     private String nombre;
     private boolean amperson;
+    private ArrayList<Integer> numrosDeEstado;
 
     public Expresion(EstadoAVL raiz, String nombre) {
+        numrosDeEstado= new ArrayList<>();
         this.raiz = raiz;
         this.nombre = nombre;
+        agregarNumerosSinRepetir(obtenerNumeros(raiz));
     }
 
     public Expresion(EstadoAVL raiz, boolean amperson) {
+        numrosDeEstado= new ArrayList<>();
         this.raiz = raiz;
         this.amperson = amperson;
+        obtenerNumeros(raiz);
     }
+    public ArrayList<Integer> obtenerNumeros(EstadoAVL estado){
+        ArrayList<Integer> numeros=new ArrayList<>();
+        if (estado.getOperacion()!=null) {
+            numeros.addAll(obtenerNumeros(estado.getEstado1()));
+            if (estado.getEstado2()!=null) {
+                numeros.addAll(obtenerNumeros(estado.getEstado2()));
+            }
+            return numeros;
+        }else{
+           return estado.getPrimeros();
+        }
+    }
+    public void agregarNumerosSinRepetir(ArrayList<Integer> numeros){
+        for (int i = 0; i < numeros.size(); i++) {
+            if (!numrosDeEstado.contains(numeros.get(i))) {
+                numrosDeEstado.add(numeros.get(i));
+                Collections.sort(numrosDeEstado);
+            }
+        }
+    }
+    
+    public ArrayList<Integer> getNumrosDeEstado() {
+        return numrosDeEstado;
+    }
+
 
     public EstadoAVL getRaiz() {
         return raiz;
@@ -35,5 +68,7 @@ public class Expresion {
     public boolean isAmperson() {
         return amperson;
     }
-    
+    public String toString(){
+        return nombre+" : "+numrosDeEstado;
+    }
 }

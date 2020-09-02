@@ -131,10 +131,12 @@ CADENA_ESPACIOS ::= Cadena:cad CADENA_ESPACIOS:cads{:String str = (String)cad+" 
                     |Cadena:cad  {:RESULT= cad;:};
 FUENTE		::= Fuente;
 EXPRESIONES     ::= Cadena:cad igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expresion exp= new Expresion((EstadoAVL)ex,(String)cad);
+                                                                                
                                                                                 ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
                                                                                 expresiones.add(0,exp);
                                                                                 RESULT=expresiones;:}
                         | ampersand igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expresion exp= new Expresion((EstadoAVL)ex,true);
+                                                                                
                                                                                 ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
                                                                                 expresiones.add(0,exp);
                                                                                 RESULT=expresiones;:}
@@ -178,6 +180,7 @@ EXPRESION	::=   AGRUPACION_A EXPRESION_OP:estado1 AGRUPACION_C EX:ex {:EstadoAVL
                                                                                          RESULT = estado;
                                                                                          }:}
 			|SALTOS:sal  {:EstadoAVL estado=new EstadoAVL(numeroDeNodo,false,false,(String)sal);
+                                    
                                     sim.add(estado);
                                         numeroDeNodo++;
                                                                             RESULT=estado;:}

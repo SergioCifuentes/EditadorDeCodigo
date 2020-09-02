@@ -26,24 +26,17 @@ public class ControladorAfd {
         numeroTerminal = simbolos.size() + 1;
 
     }
-
+    public EstadoAFD obtenerInicioAFD(){
+        return tablaDeTransicion.getEstadosAFD().get(0);
+    }
     public void generarAFD() {
         principal = genararPrincipal();
         encontrarDatosDeArbol();
         tablaDeSiguientes = new TablaDeSiguientes(principal, numeroTerminal);
 
         principal.obternerSiguientes(tablaDeSiguientes);
-        for (int i = 0; i < tablaDeSiguientes.getTable().size(); i++) {
-            System.out.println("");
-            System.out.print(i + 1 + "::: ");
-            for (int j = 0; j < tablaDeSiguientes.getTable().get(i).size(); j++) {
-                System.out.print(tablaDeSiguientes.getTable().get(i).get(j));
-            }
-            System.out.println("");
-        }
-        System.out.println(principal);
         EstadoAFD estadoAFD = new EstadoAFD(0, principal.getPrimeros());
-        tablaDeTransicion = new TablaDeTransicion(simbolos,tablaDeSiguientes,estadoAFD);
+        tablaDeTransicion = new TablaDeTransicion(simbolos,tablaDeSiguientes,estadoAFD, expresiones);
         tablaDeTransicion.construirTabla();
 
     }

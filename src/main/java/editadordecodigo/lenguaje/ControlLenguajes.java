@@ -28,7 +28,7 @@ public class ControlLenguajes {
     }
 
     public void cargarPrueba() {
-       lenguajes.add(new Lenguaje("Java", "1", "Juan", "1235", ".java"));
-       lenguajes.add(new Lenguaje("C++", "2", "Jose", "1235", ".cc"));
+      // lenguajes.add(new Lenguaje("Java", "1", "Juan", "1235", ".java"));
+       //lenguajes.add(new Lenguaje("C++", "2", "Jose", "1235", ".cc"));
     }
 }

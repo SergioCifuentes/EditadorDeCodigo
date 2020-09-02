@@ -33,12 +33,9 @@ public class ConstructorDeLenguaje {
             
             this.lenguaje.setTablaLR(constructorDeEstados.getTablaLR());
         }
-        ControladorAfd conAfd = new ControladorAfd(expresiones, sim);
-        conAfd.generarAFD();
-        System.out.println("EXPRESIONES "+expresiones.size());
-        for (int i = 0; i < expresiones.size(); i++) {
-            System.out.println(i +" "+expresiones.get(i).getNombre()+" "+expresiones.get(i).isAmperson()+" "+expresiones.get(i).getRaiz());
-        }
+        controladorAfd = new ControladorAfd(expresiones, sim);
+        controladorAfd.generarAFD();
+        lenguaje.setEstadoInical(controladorAfd.obtenerInicioAFD());
         //System.out.println(lenguaje);
     }
 

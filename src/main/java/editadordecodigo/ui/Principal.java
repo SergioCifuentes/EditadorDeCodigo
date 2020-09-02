@@ -7,6 +7,7 @@ package editadordecodigo.ui;
 
 import editadordecodigo.archivos.Archivo;
 import editadordecodigo.archivos.ManejadorDeArchivos;
+import editadordecodigo.compilador.Compilador;
 import editadordecodigo.lenguaje.ControlLenguajes;
 import editadordecodigo.lenguaje.ManejadorEntrada;
 import editadordecodigo.ui.backend.NumeroLinea;
@@ -34,6 +35,8 @@ public class Principal extends javax.swing.JFrame {
         cl = new ControlLenguajes();
         cl.cargarPrueba();
         mda= new ManejadorDeArchivos();
+        ManejadorEntrada me = new ManejadorEntrada();
+        me.cargarEjemplo(this);
     }
 
     /**
@@ -140,6 +143,11 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem6.setText("Compilar");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem6);
 
         jMenuItem7.setText("Cargar Lenguaje");
@@ -241,6 +249,12 @@ public class Principal extends javax.swing.JFrame {
         TablaLALR tabla = new TablaLALR(mda.getArchivos().get(tabs.getSelectedIndex()).getLenguaje());
         tabla.setVisible(true);
     }//GEN-LAST:event_menuTablaActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        Archivo archivoACompilar =mda.getArchivos().get(tabs.getSelectedIndex());
+        Compilador comp = new Compilador(archivoACompilar.getLenguaje(),archivoACompilar.getText(), this);
+        comp.compilar();
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
