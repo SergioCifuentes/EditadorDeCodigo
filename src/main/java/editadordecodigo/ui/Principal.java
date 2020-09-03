@@ -9,6 +9,7 @@ import editadordecodigo.archivos.Archivo;
 import editadordecodigo.archivos.ManejadorDeArchivos;
 import editadordecodigo.compilador.Compilador;
 import editadordecodigo.lenguaje.ControlLenguajes;
+import editadordecodigo.lenguaje.Lenguaje;
 import editadordecodigo.lenguaje.ManejadorEntrada;
 import editadordecodigo.ui.backend.NumeroLinea;
 import editadordecodigo.ui.backend.TextoDeAcciones;
@@ -16,6 +17,7 @@ import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
@@ -24,10 +26,12 @@ import javax.swing.JTextPane;
  * @author sergio
  */
 public class Principal extends javax.swing.JFrame {
+    
     private NumeroLinea nl;
-    private ControlLenguajes cl ;
+    private ControlLenguajes cl;
     private ManejadorDeArchivos mda;
     private Compilador compi;
+
     /**
      * Creates new form Principal
      */
@@ -35,9 +39,10 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         cl = new ControlLenguajes();
         cl.cargarPrueba();
-        mda= new ManejadorDeArchivos();
+        mda = new ManejadorDeArchivos();
         ManejadorEntrada me = new ManejadorEntrada();
         me.cargarEjemplo(this);
+        agregarLenguajes();
     }
 
     /**
@@ -64,7 +69,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        MenuLenguajes = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -77,6 +82,8 @@ public class Principal extends javax.swing.JFrame {
         setTitle("Editador De Codigo");
         setBackground(new java.awt.Color(0, 0, 51));
 
+        tabs.setForeground(new java.awt.Color(0, 0, 102));
+        tabs.setOpaque(true);
         tabs.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabsStateChanged(evt);
@@ -137,8 +144,8 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Lenguajes");
-        jMenuBar1.add(jMenu2);
+        MenuLenguajes.setText("Lenguajes");
+        jMenuBar1.add(MenuLenguajes);
 
         jMenu3.setText("Ejecutar");
 
@@ -223,28 +230,28 @@ public class Principal extends javax.swing.JFrame {
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-       
+
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         EleccionDeLenguaje el = new EleccionDeLenguaje(this, true, cl.getLenguajes());
         el.setVisible(true);
-        if (el.getLenguajeElejido()!=null) {
+        if (el.getLenguajeElejido() != null) {
             IngresoDeNombre idn = new IngresoDeNombre(this, rootPaneCheckingEnabled, el.getLenguajeElejido());
             idn.setVisible(true);
-            if (idn.getArchivo()!=null) {
+            if (idn.getArchivo() != null) {
                 agregarArchivo(idn.getArchivo());
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-          ManejadorEntrada me = new ManejadorEntrada();
-        me.cargarLenguaje(this);  
+        ManejadorEntrada me = new ManejadorEntrada();
+        me.cargarLenguaje(this);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        
+
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void tabsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabsStateChanged
@@ -257,61 +264,82 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuTablaActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        Archivo archivoACompilar =mda.getArchivos().get(tabs.getSelectedIndex());
-        compi = new Compilador(archivoACompilar.getLenguaje(),archivoACompilar.getText(), this);
+        Archivo archivoACompilar = mda.getArchivos().get(tabs.getSelectedIndex());
+        compi = new Compilador(archivoACompilar.getLenguaje(), archivoACompilar.getText(), this);
         compi.compilar();
         menuPila.setEnabled(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void menuPilaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPilaActionPerformed
-        if (compi!=null) {
+        if (compi != null) {
             Pila pila = new Pila(compi.obtenerPila());
             pila.setVisible(true);
+            agregarLenguajes();
         }
     }//GEN-LAST:event_menuPilaActionPerformed
+    private void agregarLenguajes() {
+        for (int i = 0; i < cl.getLenguajes().size(); i++) {
+            javax.swing.JMenuItem menuNuevo = new JMenuItem();
+            final Lenguaje len= cl.getLenguajes().get(i);
+            
+            menuNuevo.setText(cl.getLenguajes().get(i).getNombre());
+            menuNuevo.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    abrirInfoLenguaje(evt,len);
+                }
+            });
+            MenuLenguajes.add(menuNuevo);
+        }
+    }
+    
+    private void abrirInfoLenguaje(java.awt.event.ActionEvent evt, Lenguaje lenguaje) {        
+        InfoLenguaje infoLenguaje = new InfoLenguaje(lenguaje);
+        infoLenguaje.setVisible(true);
+    }
 
     /**
      * @param args the command line arguments
      */
-
-private void contarLineas(JScrollPane jsp,JTextPane txtPrin){
-        nl= new NumeroLinea(txtPrin);
+    private void contarLineas(JScrollPane jsp, JTextPane txtPrin) {
+        nl = new NumeroLinea(txtPrin);
         jsp.setRowHeaderView(nl);
- 
+        
     }
-public void escribirEnErrores(String text){
-    TextoDeAcciones.appendToPane(txtErrores, text, Color.red, false);
-}
-
-
-private void agregarArchivo(Archivo archivo){
-    mda.addArchivo(archivo);
-    JScrollPane jsp = new JScrollPane();
-     jsp.setViewportView(archivo);
-    jsp.setVisible(true);
-    tabs.add(archivo.getNombre()+archivo.getLenguaje().getExtension(),jsp);
-    contarLineas(jsp,archivo);
-    tabs.setSelectedIndex(tabs.getTabCount()-1);
-    if (!menuTabla.isEnabled()) {
-        menuTabla.setEnabled(true);
+    
+    public void escribirEnErrores(String text) {
+        TextoDeAcciones.appendToPane(txtErrores, text, Color.red, false);
     }
-}  
-
+    
+    private void agregarArchivo(Archivo archivo) {
+        mda.addArchivo(archivo);
+        JScrollPane jsp = new JScrollPane();
+        jsp.setViewportView(archivo);
+        jsp.setVisible(true);
+        tabs.add(archivo.getNombre() + archivo.getLenguaje().getExtension(), jsp);
+        contarLineas(jsp, archivo);
+        tabs.setSelectedIndex(tabs.getTabCount() - 1);
+        if (!menuTabla.isEnabled()) {
+            menuTabla.setEnabled(true);
+        }
+    }
+    
     public JTextPane getjTxtErrores() {
         return txtErrores;
     }
-public ControlLenguajes getControlLenguajes(){
-    return cl;
-}
+    
+    public ControlLenguajes getControlLenguajes() {
+        return cl;
+    }
+    
     public JTextPane getTxtOutput() {
         return txtOutput;
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu MenuLenguajes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;

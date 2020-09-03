@@ -97,9 +97,7 @@ public class Pila {
             } else if (siguiente.getClass().equals(Reduce.class)) {
                 System.out.println("REDUCE");
                 int numeroDeReduce = siguiente.getNumeroDeAccion();
-                for (int i = 0; i < tablaLR.getProduccions().size(); i++) {
-                    System.out.println(i + 1 + " " + tablaLR.getProduccions().get(i));
-                }
+               
                 Produccion pr = tablaLR.getProduccions().get(numeroDeReduce - 1);
                 String[] fila1 = {obtenerEstados(), obtenerSimbolosActuales(), token.getNombre() + " " + entradaResultante, "Reducir Mediante " + pr.toString()};
                 tablaDePila.add(fila1);

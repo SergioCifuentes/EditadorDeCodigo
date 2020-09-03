@@ -31,4 +31,15 @@ public class ControlLenguajes {
       // lenguajes.add(new Lenguaje("Java", "1", "Juan", "1235", ".java"));
        //lenguajes.add(new Lenguaje("C++", "2", "Jose", "1235", ".cc"));
     }
+    
+    public int obtenernumero(String nombre){
+        for (int i = 0; i < lenguajes.size(); i++) {
+            if (true) {
+                if (lenguajes.get(i).getNombre().equals(nombre)) {
+                    return i;
+                }
+            }
+        }
+        return 0;
+    }
 }

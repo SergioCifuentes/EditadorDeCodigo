@@ -24,10 +24,10 @@ LineTerminator = \r|\n|\r\n
 //Reglas Lexicas
 <YYINITIAL>{    
         "nombre"                                  {return new Symbol(SimbolosLenguaje.nombre, yycolumn,yyline,yytext());}
-        "version"                                  {return new Symbol(SimbolosLenguaje.version, yycolumn,yyline,yytext());}
+        ("version"|"versión")                                  {return new Symbol(SimbolosLenguaje.version, yycolumn,yyline,yytext());}
 "autor"                                  {return new Symbol(SimbolosLenguaje.autor, yycolumn,yyline,yytext());}
 "lanzamiento"                                  {return new Symbol(SimbolosLenguaje.lanzamiento, yycolumn,yyline,yytext());}
-"extension"                                  {return new Symbol(SimbolosLenguaje.extension, yycolumn,yyline,yytext());}
+("extension"|"extensión")                                  {return new Symbol(SimbolosLenguaje.extension, yycolumn,yyline,yytext());}
 "%%"                                  {return new Symbol(SimbolosLenguaje.separador, yycolumn,yyline,yytext());}
 ";"                                  {return new Symbol(SimbolosLenguaje.puntoYComa, yycolumn,yyline,yytext());}
 "*"                                  {return new Symbol(SimbolosLenguaje.asterisco, yycolumn,yyline,yytext());}

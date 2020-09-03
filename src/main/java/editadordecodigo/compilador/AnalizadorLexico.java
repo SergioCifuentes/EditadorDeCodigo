@@ -44,6 +44,7 @@ public class AnalizadorLexico {
         rutas = new ArrayList<>();
         while (true) {
             String siguiente = compi.obtenerSiguienteCaracter();
+            linea+=compi.getSumaLinea();
             System.out.println("SIGUIENTE " + siguiente);
             boolean posible;
             if (siguiente != null) {
@@ -64,7 +65,7 @@ public class AnalizadorLexico {
             if (!posible) {
 
                 if (rutas.isEmpty()) {
-                    TextoDeAcciones.appendToPane(compi.getPrincipal().getjTxtErrores(), "ERROR LEXICO Simbolo No Reconocido\n Linea: " + linea + "\nColumna: " + compi.getColumnaActual() + "\nInput: " + cadenaFormandose, Color.red, false);
+                    TextoDeAcciones.appendToPane(compi.getPrincipal().getjTxtErrores(), "ERROR LEXICO Simbolo No Reconocido\n Linea: " + linea + "\nColumna: " + (compi.getColumnaActual()-1) + "\nInput: " + cadenaFormandose, Color.red, false);
                 } else {
                     if (siguiente != null) {
                         cadenaFormandose = cadenaFormandose.substring(0, cadenaFormandose.length() - 1);
@@ -87,13 +88,13 @@ public class AnalizadorLexico {
                         if (cadenaFormandose.length() > 1) {
                             reducirRutas();
                         } else {
-                            TextoDeAcciones.appendToPane(compi.getPrincipal().getjTxtErrores(), "ERROR LEXICO Simbolo\n Linea: " + linea + "\nColumna: " + compi.getColumnaActual() + "\nInput: " + cadenaFormandose, Color.red, false);
+                            TextoDeAcciones.appendToPane(compi.getPrincipal().getjTxtErrores(), "ERROR LEXICO Simbolo\n Linea: " + linea + "\nColumna: " + (compi.getColumnaActual()-1) + "\nInput: " + cadenaFormandose, Color.red, false);
                             return null;
                         }
 
                     }
                     if (rutas.isEmpty()) {
-                        TextoDeAcciones.appendToPane(compi.getPrincipal().getjTxtErrores(), mensajeErrorSiNoTerminal + "\n Linea: " + linea + "\nColumna: " + compi.getColumnaActual() + "\nInput: " + cadenaFormandose, Color.red, false);
+                        TextoDeAcciones.appendToPane(compi.getPrincipal().getjTxtErrores(), mensajeErrorSiNoTerminal + "\n Linea: " + linea + "\nColumna: " + (compi.getColumnaActual()-1) + "\nInput: " + cadenaFormandose, Color.red, false);
                     }
 
                 }

@@ -36,6 +36,14 @@ public class Produccion {
         return str;
     }
 
+    public String getProduccionesString(){
+         String str = "";
+        for (int i = 0; i <producciones.size(); i++) {
+            str+=producciones.get(i).getNombre()+" ";
+        }
+        System.out.println("");
+        return str;
+    }
     public Simbolo getNoTerminal() {
         return noTerminal;
     }
