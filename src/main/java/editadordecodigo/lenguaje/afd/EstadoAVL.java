@@ -128,24 +128,18 @@ public class EstadoAVL {
     
     public void obternerSiguientes(TablaDeSiguientes tabla) {
         if (operacion != null) {
-            System.out.println("OPPPPPPPPPPPP"+operacion.getTipo()+estado1.primeros);
             if (operacion.getTipo() == Operacion.CONCATENACION) {
-                System.out.println("CON "+estado1.ultimos+"  <- "+estado2.primeros);
                 for (int i = 0; i < estado1.ultimos.size(); i++) {
                     for (int j = 0; j < estado2.primeros.size(); j++) {
-                        System.out.println("ES"+(estado1.ultimos.get(i)-1));
                         if (!tabla.getTable().get(estado1.ultimos.get(i)-1).contains(estado2.primeros.get(j))) {
                             tabla.getTable().get(estado1.ultimos.get(i)-1).add(estado2.primeros.get(j));
                             Collections.sort(tabla.getTable().get(estado1.ultimos.get(i)-1));
                         }
                     }
-                    
                 }
             } else if (operacion.getTipo() == Operacion.CERO_O_MAS_VECES||operacion.getTipo() == Operacion.UNA_O_MAS_VECES) {
-                System.out.println("OOOP "+estado1.ultimos+"  <- "+estado1.primeros);
                 for (int i = 0; i < estado1.ultimos.size(); i++) {
                     for (int j = 0; j < estado1.primeros.size(); j++) {
-                        
                         if (!tabla.getTable().get(estado1.ultimos.get(i)-1).contains(estado1.primeros.get(j))) {
                             tabla.getTable().get(estado1.ultimos.get(i)-1).add(estado1.primeros.get(j));
                             Collections.sort(tabla.getTable().get(estado1.ultimos.get(i)-1));
@@ -164,7 +158,6 @@ public class EstadoAVL {
     public ArrayList<Integer> verificarPrimeros() {
         if (primeros.isEmpty()) {
             if (estado2 != null) {
-                
                 switch (operacion.tipo) {
                     case Operacion.CONCATENACION:
                         if (estado1.anulable) {

@@ -67,10 +67,10 @@ public class Compilador {
                         return null;
                     }
                     String siguiente = String.valueOf(code.charAt(indiceFinal));
-                    System.out.println("SIGGGGGG " + siguiente + " " + indiceFinal);
+                    
                     if (siguiente == null || siguiente.equals("\n")) {
                         if (siguiente != null && siguiente.equals("\n")) {
-                            System.out.println("Comentario " + indiceFinal + " " + sumaLinea);
+                            
                             sumaLinea++;
                             resetColumanActual();
                         }
@@ -89,10 +89,10 @@ public class Compilador {
                         return null;
                     }
                     String siguiente = String.valueOf(code.charAt(indiceFinal));
-                    System.out.println("SIGGGGGG " + siguiente + " " + indiceFinal);
+                    
                     if (siguiente == null || siguiente.equals("\n")) {
                         if (siguiente != null && siguiente.equals("\n")) {
-                            System.out.println("SUMAR LINEA");
+                            
                             sumaLinea++;
                             resetColumanActual();
                         }

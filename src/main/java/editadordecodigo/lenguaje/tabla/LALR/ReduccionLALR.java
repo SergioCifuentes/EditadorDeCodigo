@@ -28,7 +28,7 @@ private ArrayList<EstadosCombinados> estadosCom;
         estadosCom= new ArrayList<>();
         combinarEstados();
         
-        
+        return null;
     }
     public void combinarEstados(){
         ArrayList<Integer> numeroYaCombinados= new ArrayList<>();

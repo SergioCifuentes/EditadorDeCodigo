@@ -41,7 +41,6 @@ public class AnalizadorSintactico {
         while (true) {
             Token siguiente=obtenerSiguienteToken();
             obtenerEntrada();
-            System.out.println("Recibiendo Token "+siguiente);
             
             if (siguiente==null) {
                 boolean listo = pila.ingresarSiguienteToken(null,entrada);

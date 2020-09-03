@@ -23,8 +23,6 @@ public class ConstructorDeEstados {
 
         this.simbolos = simbolos;
         this.producciones = producciones;
-        System.out.println("SIMBOLOS " + simbolos.size());
-        System.out.println("PRODS " + this.producciones.size());
         estados = new ArrayList<>();
         primerosYSiguientes = new PrimerosYSiguientes();
         primerosYSiguientes.armarTabla(simbolos, producciones);
@@ -38,7 +36,6 @@ public class ConstructorDeEstados {
         estados.add(cerradura(produccionEstados));
         for (int i = 0; i < estados.size(); i++) {
             estados.get(i).setConecciones(irA(estados.get(i)));
-            System.out.println("CONECCIONES " + estados.get(i).getConecciones().size());
             for (int j = 0; j < estados.get(i).getConecciones().size(); j++) {
                 estados.get(i).getConecciones().get(j).setEstadoFinal(cerradura(estados.get(i).getConecciones().get(j).getProduccionesIniciales()));
                 Estado existente = regresarEstadoIgual(estados.get(i).getConecciones().get(j).getEstadoFinal());
@@ -50,10 +47,7 @@ public class ConstructorDeEstados {
 
             }
         }
-        System.out.println("NUMERO " + estados.size());
-        for (int i = 0; i < estados.size(); i++) {
-            System.out.println(estados.get(i));
-        }
+        
         tablaLR= new TablaLR(estados, this.simbolos,this.producciones);
         
     }
@@ -148,25 +142,12 @@ public class ConstructorDeEstados {
     }
 
     public ArrayList<ProduccionEstado> derivar(ProduccionEstado pe) {
-        System.out.println("DERIVAR " + pe.toString());
         ArrayList<ProduccionEstado> producciones = new ArrayList<>();
         Simbolo simboloAEvaluar = pe.getProduccion().getProducciones().get(pe.getPosicion());
         ArrayList<Simbolo> siguientes = new ArrayList<>();
         siguientes.addAll(obtenerSiguientes(pe, pe.getPosicion()));
-        /* System.out.println("/////");
-        System.out.println("Para " + pe.getPosicion() + " ");
-        for (int i = 0; i < pe.getProduccion().getProducciones().size(); i++) {
-            System.out.print(pe.getProduccion().getProducciones().get(i).getNombre() + " ");
-        }
-        System.out.println("SIM");
-        for (int i = 0; i < siguientes.size(); i++) {
-            System.out.print(siguientes.get(i).getNombre() + " ");
-        }
-        System.out.println("/////");*/
         for (int i = 0; i < this.producciones.size(); i++) {
-
             if (this.producciones.get(i).getNoTerminal().equals(simboloAEvaluar)) {
-
                 ProduccionEstado nuevoPE = new ProduccionEstado(this.producciones.get(i), 0);
                 nuevoPE.setSiguientes(siguientes);
                 producciones.add(nuevoPE);

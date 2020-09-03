@@ -35,13 +35,14 @@ public class EstadosCombinados {
                 int pos=verificarColisiones(estados.get(i), estados.get(j), tabla);
                 if (pos==POSIBILIDAD_SI) {
                     reduccionLALR.combinarEstados(estados.get(i), estados.get(j));
-                }else if(){
+                }else if(true){
                     
                 }else{
                     
                 }
             }
         }
+        return false;
     }
 
     public int verificarColisiones(Estado estado1,Estado estado2,TablaLR tabla){
