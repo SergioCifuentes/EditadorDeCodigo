@@ -106,7 +106,7 @@ public class TablaDeTransicion {
                 } else {
                     for (int j = 0; j < expresions.size(); j++) {
                         if (expresions.get(j).getNumrosDeEstado().contains(numeroDeEstado)) {
-                            return new Token(numeroDeEstado, estados.get(i).isNumeros(), estados.get(i).isLetras(), estados.get(i).getCadena(),expresions.get(j).getNombre());
+                            return new Token(numeroDeEstado, estados.get(i).isNumeros(), estados.get(i).isLetras(), estados.get(i).getCadena(),expresions.get(j).getNombre(),expresions.get(j).isAmperson());
                         }
                     }
                     

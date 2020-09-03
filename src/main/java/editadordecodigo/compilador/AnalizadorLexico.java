@@ -81,7 +81,14 @@ public class AnalizadorLexico {
                             if (rutas.get(i).getConecciones().size() == cadenaFormandose.length()) {
                                 ConeccionesAFD ultima = rutas.get(i).getConecciones().get(rutas.get(i).getConecciones().size() - 1);
                                 if (ultima.getEstadoFinal().isTerminal()) {
-                                    return ultima.getSim();
+                                    System.out.println("TOKEM   :"  +ultima.getSim());
+                                    if (ultima.getSim().isAmperson()) {
+                                        System.out.println("AMPERSON");
+                                        return analizarSiguiente();
+                                    }else{
+                                        return ultima.getSim();
+                                    }
+                                    
                                 }
                             }
                         }
@@ -142,6 +149,7 @@ public class AnalizadorLexico {
         System.out.println("Verificando " + caracter);
         if (rutas.isEmpty()) {
             for (int i = 0; i < inicial.getConeccionesAFDs().size(); i++) {
+                System.out.println(i+"  "+inicial.getConeccionesAFDs().get(i)+"    [[[");
                 if (inicial.getConeccionesAFDs().get(i).verificarMovimiento(caracter)) {
                     System.out.println("Siguiente En " + inicial.getConeccionesAFDs().get(i));
                     RutasDeEstados rutaNueva = new RutasDeEstados();

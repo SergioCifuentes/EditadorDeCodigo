@@ -68,7 +68,7 @@ public class Pila {
         Accion siguiente;
         if (token == null) {
             siguiente = tablaLR.getAcciones()[estado - 1][obtenerColumna(Simbolo.COMODIN.getNombre())];
-            token = new Token(tablaLR.getSimbolosExistentes().size(), false, false, "", "$");
+            token = new Token(tablaLR.getSimbolosExistentes().size(), false, false, "", "$",false);
         } else {
             System.out.println(obtenerColumna(token.getNombre()));
             siguiente = tablaLR.getAcciones()[estado - 1][obtenerColumna(token.getNombre())];

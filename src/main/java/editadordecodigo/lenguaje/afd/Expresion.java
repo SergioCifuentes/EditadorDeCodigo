@@ -16,10 +16,12 @@ public class Expresion {
     private EstadoAVL raiz;
     private String nombre;
     private boolean amperson;
+    private final static String AMPERSON="&AMPERSON&";
     private ArrayList<Integer> numrosDeEstado;
 
     public Expresion(EstadoAVL raiz, String nombre) {
         numrosDeEstado= new ArrayList<>();
+        amperson=false;
         this.raiz = raiz;
         this.nombre = nombre;
         agregarNumerosSinRepetir(obtenerNumeros(raiz));
@@ -27,9 +29,11 @@ public class Expresion {
 
     public Expresion(EstadoAVL raiz, boolean amperson) {
         numrosDeEstado= new ArrayList<>();
+        nombre=AMPERSON;
         this.raiz = raiz;
         this.amperson = amperson;
         obtenerNumeros(raiz);
+        agregarNumerosSinRepetir(obtenerNumeros(raiz));
     }
     public ArrayList<Integer> obtenerNumeros(EstadoAVL estado){
         ArrayList<Integer> numeros=new ArrayList<>();

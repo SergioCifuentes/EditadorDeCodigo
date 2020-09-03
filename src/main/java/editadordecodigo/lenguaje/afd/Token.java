@@ -11,19 +11,25 @@ package editadordecodigo.lenguaje.afd;
  */
 public class Token {
     private String nombre;
+    private boolean amperson;
     private boolean numeros;
     private boolean letras;
     private String cadena;
     private Integer numero;
     private boolean terminal;
 
-    public Token(int numero, boolean numeros, boolean letras, String cadena,String nombre) {
+    public Token(int numero, boolean numeros, boolean letras, String cadena,String nombre,boolean amperson) {
+        this.amperson=amperson;
         this.nombre=nombre;
         this.numero = numero;
         this.numeros = numeros;
         this.letras = letras;
         this.cadena = cadena;
 
+    }
+
+    public boolean isAmperson() {
+        return amperson;
     }
 
     public String getNombre() {

@@ -49,6 +49,9 @@ public String getPrimerTokenEsperado(){
         if (character==null) {
             return false;
         }
+        
+        
+        System.out.println("CARACTER:{"+character+"}SIM:{"+sim.getCadena()+"}");
         if (sim.isTerminal()) {
             if (character == null) {
                 return true;

@@ -78,7 +78,7 @@ llaveA, llaveC;
 terminal Extension, Id, Entero, NumeroVersion, Cadena, Anything,Fuente,Codigo;
 
 /* Non-terminals */
-non terminal INICIO,CADENA_ESPACIOS , INFO, INFO_NO_OBL, FUENTE,STR, EXPRESIONES, EXPRESION_OP, 
+non terminal INICIO,CADENA_ESPACIOS , INFO, INFO_NO_OBL, FUENTE,STR,STRS,STR2, EXPRESIONES, EXPRESION_OP, 
 EXP, SALTOS,EXPRESION, EX, AGRUPACION_A, AGRUPACION_C,SIMBOLOS,CADENAS,GRAMATICA,PRODS,CODIGO;
 
 
@@ -133,7 +133,7 @@ CADENA_ESPACIOS ::= Cadena:cad CADENA_ESPACIOS:cads{:String str = (String)cad+" 
 FUENTE		::= Fuente;
 EXPRESIONES     ::= Cadena:cad igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expresion exp= new Expresion((EstadoAVL)ex,(String)cad);
                                                                                 
-                                                                                ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
+                                                                                    ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
                                                                                 expresiones.add(0,exp);
                                                                                 RESULT=expresiones;:}
                         | ampersand igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expresion exp= new Expresion((EstadoAVL)ex,true);
@@ -144,7 +144,7 @@ EXPRESIONES     ::= Cadena:cad igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expr
 			|{:RESULT= new ArrayList<>();:};
 EXP             ::= EXPRESION_OP:ex {:RESULT=ex;:};
 
-SALTOS 		::= blanco{:RESULT="\b";:}
+SALTOS 		::= blanco{:RESULT=" ";:}
 			|saltoDeLinea {:RESULT="\n";:}
 			|tab {:RESULT="\t";:};
 EXPRESION_OP    ::= EXPRESION_OP:estado2 EXPRESION:estado1 {:EstadoAVL estadoNuevo = new EstadoAVL((EstadoAVL)estado2,(EstadoAVL)estado1,new Operacion(Operacion.CONCATENACION));
@@ -152,7 +152,7 @@ EXPRESION_OP    ::= EXPRESION_OP:estado2 EXPRESION:estado1 {:EstadoAVL estadoNue
                         | EXPRESION_OP:estado2 op EXPRESION:estado1  {:EstadoAVL estadoNuevo = new EstadoAVL((EstadoAVL)estado2,(EstadoAVL)estado1,new Operacion(Operacion.O));
                                                             RESULT=estadoNuevo;:}
                         |EXPRESION:estado{:RESULT =estado;:};
-EXPRESION	::=   AGRUPACION_A EXPRESION_OP:estado1 AGRUPACION_C EX:ex {:EstadoAVL estado=null;
+EXPRESION	::=   parentesisA EXPRESION_OP:estado1 parentesisC EX:ex {:EstadoAVL estado=null;
                                                                             if(ex!=null){
                                                                                 estado=new EstadoAVL((EstadoAVL)estado1,new Operacion((Integer)ex));
                                                                                 RESULT=estado;
@@ -195,24 +195,43 @@ EXPRESION	::=   AGRUPACION_A EXPRESION_OP:estado1 AGRUPACION_C EX:ex {:EstadoAVL
                                                                             if(ex!=null){
                                                                               estado.setOperacion(new Operacion((Integer)ex));  
                                                                             }
-                                                                            RESULT=estado;:};
+                                                                            RESULT=estado;:}
+                        |corcheteA STRS:strs corcheteC  {:ArrayList<String> stantiguos=(ArrayList<String>)strs;
+                                                                EstadoAVL estado=new EstadoAVL(numeroDeNodo,false,false,stantiguos.get(0));
+                                                                numeroDeNodo++;
+                                                                sim.add(estado);
+                                                                for(int i =1; i < stantiguos.size(); i++){
+                                                                EstadoAVL estado2=new EstadoAVL(numeroDeNodo,false,false,stantiguos.get(i));
+                                                                    numeroDeNodo++;
+                                                                    sim.add(estado2);
+                                                                    estado=new EstadoAVL(estado,estado2,new Operacion(Operacion.O));
+                                                                }
+                                                                RESULT= estado;
+                                                            :};
+
+
+
+STRS::= STR2:st STRS:sts{:ArrayList<String> strs= new ArrayList<>();
+                        ArrayList<String> stantiguos=(ArrayList<String>)sts;
+                        strs.add((String)st);
+                        for(int i =0; i < stantiguos.size(); i++){
+                        strs.add(stantiguos.get(i));
+                        }
+                            RESULT=strs;:}
+        |STR2:st{:ArrayList<String> strs= new ArrayList<>();
+                strs.add((String)st);
+                RESULT=strs;:};
+STR2             ::= Cadena:cad {:RESULT=cad;:}
+                    |SALTOS:sal {:RESULT=sal;:}
+                    |asterisco{:RESULT="*";:}
+                    |qMark {:RESULT="?";:}
+                    |suma{:RESULT="+";:};     
+   
 STR             ::= Cadena:cad {:RESULT=cad;:}
                     |SALTOS:sal {:RESULT=sal;:}
-                    |EX:ex {:if(ex!=null){
-                                switch ((Integer)ex) {
-                                    case Operacion.CERO_O_MAS_VECES:
-                                        RESULT="*";
-                                    break;
-                                    case Operacion.VENIR_O_NO:
-                                        RESULT="?";
-                                    break;
-                                    case Operacion.UNA_O_MAS_VECES:
-                                        RESULT="+";
-                                    break;
-                                    default:
-                                        throw new AssertionError();
-                                    }
-                         }:}
+                    |asterisco{:RESULT="*";:}
+                    |qMark {:RESULT="?";:}
+                    |suma{:RESULT="+";:}
                     |AGRUPACION_A:ag {:RESULT=ag;:}
                     |AGRUPACION_C:ag {:RESULT=ag;:};
 EX 		::= asterisco{:RESULT=Operacion.CERO_O_MAS_VECES;:}

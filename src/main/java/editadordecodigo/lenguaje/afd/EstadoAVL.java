@@ -133,6 +133,7 @@ public class EstadoAVL {
                 System.out.println("CON "+estado1.ultimos+"  <- "+estado2.primeros);
                 for (int i = 0; i < estado1.ultimos.size(); i++) {
                     for (int j = 0; j < estado2.primeros.size(); j++) {
+                        System.out.println("ES"+(estado1.ultimos.get(i)-1));
                         if (!tabla.getTable().get(estado1.ultimos.get(i)-1).contains(estado2.primeros.get(j))) {
                             tabla.getTable().get(estado1.ultimos.get(i)-1).add(estado2.primeros.get(j));
                             Collections.sort(tabla.getTable().get(estado1.ultimos.get(i)-1));

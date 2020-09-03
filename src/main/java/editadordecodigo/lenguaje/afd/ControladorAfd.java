@@ -43,7 +43,7 @@ public class ControladorAfd {
 
     private EstadoAVL genararPrincipal() {
         EstadoAVL estadoPrincipal = null;
-
+        System.out.println("!!!!!!!!!!!!!!!!! "+expresiones.size());
         if (expresiones.size() > 0) {
             if (expresiones.size() > 1) {
                 EstadoAVL aux = unirEstados(expresiones.get(0).getRaiz(), expresiones.get(1).getRaiz());
@@ -82,5 +82,14 @@ public class ControladorAfd {
         principal.verificarPrimeros();
         //Ultimos
         principal.verificarUltimos();
+        System.out.println("PRIMEROS &&&&&&&&&");
+        for (int i = 0; i < principal.getPrimeros().size(); i++) {
+            System.out.println(principal.getPrimeros().get(i));
+        }
+        
+        System.out.println("SEGUNDO");
+        for (int i = 0; i < principal.getUltimos().size(); i++) {
+            System.out.println(principal.getUltimos().get(i));
+        }
     }
 }
