@@ -49,9 +49,7 @@ public class Compilador {
     public String obtenerSiguienteCaracter() {
         sumaLinea = 0;
 
-        System.out.println("Code " + code);
-        System.out.println("Indeice " + indiceFinal);
-        System.out.println("Len " + code.length());
+      
 
         if (code.length() <= indiceFinal) {
             return null;
@@ -116,7 +114,6 @@ public class Compilador {
         if (code.length() <= indiceFinal) {
             return null;
         }
-        System.out.println(String.valueOf(code.charAt(indiceFinal)));
         String aRegresar = String.valueOf(code.charAt(indiceFinal));
         indiceFinal++;
         columnaActual++;

@@ -29,10 +29,11 @@ import editadordecodigo.lenguaje.afd.*;
         int fila = s.right;
         int columna = s.left;
         
-        System.out.println("Error Sintactico Recuperado\n");
-        System.out.println("\t \tLexema: "+ lexema+"\n");
-        System.out.println("\t \tFila: "+ fila+"\n");
-        System.out.println("\t \tColumna: "+ columna+"\n");
+        principal.escribirEnErrores("Error Sintactico Recuperado\n");
+        principal.escribirEnErrores("\t \tLexema: "+ lexema+"\n");
+        principal.escribirEnErrores("\t \tFila: "+ fila+"\n");
+        principal.escribirEnErrores("\t \tColumna: "+ columna+"\n");
+
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
@@ -40,10 +41,11 @@ import editadordecodigo.lenguaje.afd.*;
             String lexema = s.value.toString();
             int fila = s.right;
             int columna = s.left;
-            System.out.println("Error Sintactico Panic Mode\n");
-            System.out.println("\t \tLexema: "+ lexema+"\n");
-            System.out.println("\t \tFila: "+ fila+"\n");
-            System.out.println("\t \tColumna: "+ columna+"\n");
+         principal.escribirEnErrores("Error Sintactico Recuperado\n");
+        principal.escribirEnErrores("\t \tLexema: "+ lexema+"\n");
+        principal.escribirEnErrores("\t \tFila: "+ fila+"\n");
+        principal.escribirEnErrores("\t \tColumna: "+ columna+"\n");
+
         } catch (Exception ex) {
             
          }
@@ -62,7 +64,38 @@ private String ejemplo;
         asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
 
     }
+ protected void mostrarErrores(int numero, Symbol s,AnalizadorSintacticoLenguaje asl) {
+    switch (numero) {
+                case 1:
+                    asl.principal.escribirEnErrores("Error Sintactico Con"+ s.value.toString() +"\n");
+                    asl.principal.escribirEnErrores("Las Expresiones son representadas con <identificador> = <expresión regular>;\n");
+                    asl.principal.escribirEnErrores("\t \tFila: " + s.right + "\n");
+                    asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
+                    break;
+                case 2:
+                    asl.principal.escribirEnErrores("Error Sintactico Con"+ s.value.toString() +"\n");
+                    asl.principal.escribirEnErrores("La informacion del lenguaje puede estar compuesta por (nombre, version, lanzamiento, autor, extension)\n");
+                    asl.principal.escribirEnErrores("\t \tFila: " + s.right + "\n");
+                    asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
+                    break;
+                 case 3:
+                    asl.principal.escribirEnErrores("Error Sintactico Con"+ s.value.toString() +"\n");
+                    asl.principal.escribirEnErrores("Para declarar un simbolo debes especificar si es un terminal o no terminal y el nombre del simbolo seguido de punto y coma\n por ejemplo: terminal letra;\n");
+                    asl.principal.escribirEnErrores("\t \tFila: " + s.right + "\n");
+                    asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
+                    break;
+                case 4:
+                    asl.principal.escribirEnErrores("Error Sintactico Con"+ s.value.toString() +"\n");
+                    asl.principal.escribirEnErrores("Para declarar producciones se requiere el simbolo no terminal seguido de :: y sus producciones\n");
+                    asl.principal.escribirEnErrores("\t \tFila: " + s.right + "\n");
+                    asl.principal.escribirEnErrores("\t \tColumna: " + s.left + "\n");
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        
 
+    }
 :}
 init with {:
 System.out.println("ssss");
@@ -126,7 +159,8 @@ INFO_NO_OBL  ::=  version dosPuntos NumeroVersion:num puntoYComa INFO_NO_OBL {:i
                                                                               }else{
                                                                                 mostrarAtributoRepetido("Extension",((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);  
                                                                                 }:}
-			|;
+			|
+                        |error {:mostrarErrores(2,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);:} ;
 CADENA_ESPACIOS ::= Cadena:cad CADENA_ESPACIOS:cads{:String str = (String)cad+" "+(String)cads;
                                                          RESULT=str;:}
                     |Cadena:cad  {:RESULT= cad;:};
@@ -141,7 +175,8 @@ EXPRESIONES     ::= Cadena:cad igual EXP:ex puntoYComa EXPRESIONES:exAnte {:Expr
                                                                                 ArrayList<Expresion> expresiones= (ArrayList<Expresion>)exAnte;
                                                                                 expresiones.add(0,exp);
                                                                                 RESULT=expresiones;:}
-			|{:RESULT= new ArrayList<>();:};
+			|{:RESULT= new ArrayList<>();:}
+                        |error {: mostrarErrores(1,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);:} ;
 EXP             ::= EXPRESION_OP:ex {:RESULT=ex;:};
 
 SALTOS 		::= blanco{:RESULT=" ";:}
@@ -260,7 +295,8 @@ SIMBOLOS        ::= sTerminal CADENAS:cads puntoYComa SIMBOLOS{:ArrayList<String
                                                                                 mostrarAtributoRepetido("Atributo No Terminal"+nombres.get(i),((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl); 
                                                                             }
                                                                     }:}
-                    |;
+                    |
+                    |error{:mostrarErrores(3,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);:};
 CADENAS         ::= Cadena:nom coma CADENAS:cads {:ArrayList<String> nombres=(ArrayList<String>)cads;
                                                     ArrayList<String> todos=new ArrayList<String>();
                                                     todos.add((String)nom);
@@ -290,7 +326,8 @@ GRAMATICA       ::= Cadena:noterminal dosPuntos dosPuntos PRODS:prod CODIGO:code
                                                                                     }else{
                                                                                     RESULT=new ArrayList<Produccion>();
                                                                                     //simbolo no es un noterminal o no existe
-                                                                                        }:};
+                                                                                        }:}
+                        |error{:mostrarErrores(4,((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoLenguaje$stack.peek()),asl);:};
 PRODS           ::= Cadena:nombre dosPuntos Cadena:id PRODS:prod    {:ArrayList<Simbolo> simbolos= new ArrayList<Simbolo>();
                                                                         
                                                                     if(asl.tablaDeSimbolos.verificarExistencia((String)nombre,TablaDeSimbolos.TIPO_SIMBOLO_TERMINAL)){

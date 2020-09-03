@@ -80,12 +80,8 @@ public class ControladorAfd {
         principal.verificarPrimeros();
         //Ultimos
         principal.verificarUltimos();
-        for (int i = 0; i < principal.getPrimeros().size(); i++) {
-            System.out.println(principal.getPrimeros().get(i));
-        }
         
-        for (int i = 0; i < principal.getUltimos().size(); i++) {
-            System.out.println(principal.getUltimos().get(i));
-        }
+        
+        
     }
 }

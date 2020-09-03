@@ -67,39 +67,7 @@ public class ManejadorEntrada {
         }
     }
 
-    //Test
-    public void cargarEjemplo(Principal pc) {
-        File file = new File("/home/sergio/AA/eje 2.len");
-        
-        if (file != null && file.getPath().contains(EXTENSION)) {
-            try {
-                String str = obtenerCodigoFuente(file);
-                if (str != null) {
-                    AnalizadorLexicoLenguaje all = new AnalizadorLexicoLenguaje(new StringReader(str));
-                    TablaDeSimbolos tds = new TablaDeSimbolos();
-                    AnalizadorSintacticoLenguaje asl = new AnalizadorSintacticoLenguaje(all);
-                    asl.setTablaDeSimbolos(tds);
-                    asl.setFrame(pc);
-                    asl.parse();
-                    Lenguaje nuevo = asl.cdl.getLenguaje();
-                    if (nuevo != null) {
-                        pc.getControlLenguajes().addLenguaje(nuevo);
-                    }
 
-                } else {
-                    TextoDeAcciones.appendToPane(pc.getjTxtErrores(), "Secciones insuficientes del archivo (.len)", Color.red, true);
-                }
-
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Exception ex) {
-                Logger.getLogger(ManejadorEntrada.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            TextoDeAcciones.appendToPane(pc.getjTxtErrores(), "El archivo debe tener la extension (.len)", Color.red, true);
-
-        }
-    }
 
     public String obtenerCodigoFuente(File file) {
         BufferedReader br = null;

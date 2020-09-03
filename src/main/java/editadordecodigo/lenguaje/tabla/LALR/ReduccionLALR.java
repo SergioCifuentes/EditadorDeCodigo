@@ -18,39 +18,42 @@ import java.util.ArrayList;
  * @author sergio
  */
 public class ReduccionLALR {
-private ArrayList<Estado> estados;
-private TablaLR tabla;
-private ArrayList<EstadosCombinados> estadosCom;
+
+    private ArrayList<Estado> estados;
+    private TablaLR tabla;
+    private ArrayList<EstadosCombinados> estadosCom;
 
     public TablaLR intentarReducir(TablaLR tabla, ArrayList<Estado> estados) {
-        this.estados=estados;
-        this.tabla=tabla;
-        estadosCom= new ArrayList<>();
+        this.estados = estados;
+        this.tabla = tabla;
+        estadosCom = new ArrayList<>();
         combinarEstados();
-        
+
         return null;
     }
-    public void combinarEstados(){
-        ArrayList<Integer> numeroYaCombinados= new ArrayList<>();
+
+    public void combinarEstados() {
+        ArrayList<Integer> numeroYaCombinados = new ArrayList<>();
         for (int i = 0; i < estados.size(); i++) {
-            ArrayList<Estado> estadosAux= new ArrayList<>();
-            if (i!=1) {
-                
+            ArrayList<Estado> estadosAux = new ArrayList<>();
+            if (i != 1) {
+
                 estadosAux.add(estados.get(i));
-               for (int j = i; j < estados.size(); j++) {
-                if (j!=1&&!numeroYaCombinados.contains(j)) {
-                    if (verificarEstadosIguales(estados.get(i), estados.get(j))) {
-                        estadosAux.add(estados.get(j));
+                for (int j = i; j < estados.size(); j++) {
+                    if (j != 1 && !numeroYaCombinados.contains(j)) {
+                        if (verificarEstadosIguales(estados.get(i), estados.get(j))) {
+                            estadosAux.add(estados.get(j));
+                        }
                     }
                 }
-            } 
             }
-            if (estadosAux.size()>1) {
-                estadosCom.add(new EstadosCombinados(estados,i+1,this));
+            if (estadosAux.size() > 1) {
+                estadosCom.add(new EstadosCombinados(estados, i + 1, this));
             }
         }
-}
-    public boolean  verificarNumerosEnColision(int numeroEstado1,int numeroEstado2){
+    }
+
+    public boolean verificarNumerosEnColision(int numeroEstado1, int numeroEstado2) {
         for (int i = 0; i < estadosCom.size(); i++) {
             if (estadosCom.get(i).verificarNumerosEnColision(numeroEstado1, numeroEstado2)) {
                 return true;
@@ -58,51 +61,53 @@ private ArrayList<EstadosCombinados> estadosCom;
         }
         return false;
     }
-    public void combinarEstados(Estado estado1,Estado estado2){
+
+    public void combinarEstados(Estado estado1, Estado estado2) {
         int numero;
-        if (estado1.getNumero()<estado2.getNumero()) {
-            numero=estado1.getNumero();
-        }else{
-            numero=estado2.getNumero();
+        if (estado1.getNumero() < estado2.getNumero()) {
+            numero = estado1.getNumero();
+        } else {
+            numero = estado2.getNumero();
         }
-        ArrayList<ProduccionEstado> nuevasProduccionEstado= new ArrayList<>();
+        ArrayList<ProduccionEstado> nuevasProduccionEstado = new ArrayList<>();
         for (int i = 0; i < estado1.getProduciones().size(); i++) {
             ProduccionEstado pe = new ProduccionEstado(estado1.getProduciones().get(i).getProduccion(), estado1.getProduciones().get(i).getPosicion());
-                   for (int j = 0; j < estado2.getProduciones().size(); j++) {
-                       if (estado1.getProduciones().get(i).equals(estado2.getProduciones().get(j))
-                            && estado1.getProduciones().get(i).getPosicion()==estado2.getProduciones().get(j).getPosicion()) {
-                        pe.setSiguientes(estado1.getProduciones().get(i).getSiguientes(), estado2.getProduciones().get(j).getSiguientes());
-                        nuevasProduccionEstado.add(pe);
-                    }
+            for (int j = 0; j < estado2.getProduciones().size(); j++) {
+                if (estado1.getProduciones().get(i).equals(estado2.getProduciones().get(j))
+                        && estado1.getProduciones().get(i).getPosicion() == estado2.getProduciones().get(j).getPosicion()) {
+                    pe.setSiguientes(estado1.getProduciones().get(i).getSiguientes(), estado2.getProduciones().get(j).getSiguientes());
+                    nuevasProduccionEstado.add(pe);
+                }
             }
         }
-        Estado nuevoEstado= new Estado(numero, nuevasProduccionEstado);
+        Estado nuevoEstado = new Estado(numero, nuevasProduccionEstado);
         estados.remove(estado1);
         estados.remove(estado2);
         estados.add(nuevoEstado);
-        cambiarNumerosEntabla(estado1.getNumero(),estado2.getNumero(),numero);
-        
+        cambiarNumerosEntabla(estado1.getNumero(), estado2.getNumero(), numero);
+
     }
-    public void cambiarNumerosEntabla(int numero1,int numero2, int numerofinal){
+
+    public void cambiarNumerosEntabla(int numero1, int numero2, int numerofinal) {
         for (int i = 0; i < tabla.getAcciones().length; i++) {
             for (int j = 0; j < tabla.getAcciones()[i].length; j++) {
-                if (tabla.getAcciones()[i][j].getClass()==GoTo.class||tabla.getAcciones()[i][j].getClass()==Shift.class||tabla.getAcciones()[i][j].getClass()==Reduce.class) {
-                    if (tabla.getAcciones()[i][j].getNumeroDeAccion()==numero1||tabla.getAcciones()[i][j].getNumeroDeAccion()==numero2) {
+                if (tabla.getAcciones()[i][j].getClass() == GoTo.class || tabla.getAcciones()[i][j].getClass() == Shift.class || tabla.getAcciones()[i][j].getClass() == Reduce.class) {
+                    if (tabla.getAcciones()[i][j].getNumeroDeAccion() == numero1 || tabla.getAcciones()[i][j].getNumeroDeAccion() == numero2) {
                         tabla.getAcciones()[i][j].setNumeroDeAccion(numerofinal);
                     }
-                    
+
                 }
             }
         }
     }
-    
-    public void verificarColisiones(){
+
+    public void verificarColisiones() {
         for (int i = 0; i < estadosCom.size(); i++) {
-            
+
         }
-        
-        
+
     }
+
     public boolean verificarEstadosIguales(Estado estado1, Estado estado2) {
         if (estado1.getProduciones().size() == estado2.getProduciones().size()) {
             boolean existe = false;
@@ -110,7 +115,7 @@ private ArrayList<EstadosCombinados> estadosCom;
                 existe = false;
                 for (int j = 0; j < estado2.getProduciones().size(); j++) {
                     if (estado1.getProduciones().get(i).equals(estado2.getProduciones().get(j))
-                            && estado1.getProduciones().get(i).getPosicion()==estado2.getProduciones().get(j).getPosicion()) {
+                            && estado1.getProduciones().get(i).getPosicion() == estado2.getProduciones().get(j).getPosicion()) {
                         existe = true;
                         break;
                     }

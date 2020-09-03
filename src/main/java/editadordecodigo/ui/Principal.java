@@ -42,7 +42,6 @@ public class Principal extends javax.swing.JFrame {
         cl.cargarPrueba();
         mda = new ManejadorDeArchivos();
         ManejadorEntrada me = new ManejadorEntrada();
-        me.cargarEjemplo(this);
         agregarLenguajes();
     }
 
@@ -133,10 +132,20 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setText("Guardar");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem3);
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem4.setText("Guardar Como");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem4);
 
         jMenuItem5.setText("Salir");
@@ -284,7 +293,15 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        JFileChooser jfc = new JFileChooser();
+        jfc.setDialogTitle("Seleccione El Archivo que desee abrir");
 
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc.showOpenDialog(this);
+        File file = jfc.getSelectedFile();
+        if (file != null) {
+            mda.abrirArchivo(file, cl.getLenguajes(), this);
+        }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void tabsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabsStateChanged
@@ -325,6 +342,15 @@ public class Principal extends javax.swing.JFrame {
         Manuales manualInstalacion= new Manuales();
         manualInstalacion.abrirManualDeInstalacion();
     }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        mda.guardarArchivo(tabs.getSelectedIndex(),this);
+        
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        mda.guardarArchivoComo(tabs.getSelectedIndex(),this);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void agregarLenguajes() {
         for (int i = 0; i < cl.getLenguajes().size(); i++) {
             javax.swing.JMenuItem menuNuevo = new JMenuItem();
@@ -358,7 +384,7 @@ public class Principal extends javax.swing.JFrame {
         TextoDeAcciones.appendToPane(txtErrores, text, Color.red, false);
     }
     
-    private void agregarArchivo(Archivo archivo) {
+    public  void agregarArchivo(Archivo archivo) {
         mda.addArchivo(archivo);
         JScrollPane jsp = new JScrollPane();
         jsp.setViewportView(archivo);

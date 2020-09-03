@@ -41,6 +41,10 @@ public class Archivo extends JTextPane{
     public File getUbicacion() {
         return ubicacion;
     }
+
+    public void setUbicacion(File ubicacion) {
+        this.ubicacion = ubicacion;
+    }
     
     
 }

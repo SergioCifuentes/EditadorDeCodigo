@@ -191,11 +191,7 @@ public class EstadoAVL {
     
     public ArrayList<Integer> verificarUltimos() {
         if (ultimos.isEmpty()) {
-            System.out.println("SOSOSOSOSOS"+estado2);
-            if (operacion!=null) {
-                System.out.println(operacion.tipo);
-            }
-            System.out.println("=======");
+           
             if (estado2 != null) {
                 
                 switch (operacion.tipo) {
@@ -209,8 +205,7 @@ public class EstadoAVL {
                         return ultimos;
                     case Operacion.O:
                         ultimos = agregarSinRepetir(estado1.verificarUltimos(), estado2.verificarUltimos());
-                        System.out.println(estado1.ultimos+"   "+estado2.ultimos);
-                        System.out.println("UUUUUUUUUUUUUUUUUUUUUU "+ultimos);
+                        
                         return ultimos;
                     default:
                         throw new AssertionError();
@@ -218,7 +213,7 @@ public class EstadoAVL {
             } else if (operacion != null) {
                 
                 ultimos = estado1.verificarUltimos();
-                System.out.println("QQQQQQQQ "+operacion.tipo+" "+estado1.primeros+"  "+estado1.ultimos);
+                
                 return ultimos;
             } else {
                 ultimos = estado1.verificarUltimos();
@@ -266,25 +261,7 @@ public class EstadoAVL {
             
         }
         str += " ANU:" + anulable + " ";
-        if (anulable == null) {
-            System.out.println("[[[[");
-            if (letras) {
-                System.out.println("Letras");
-            }
-            if (numeros) {
-                System.out.println("nu");
-            }
-            if (terminal) {
-                System.out.println("TERMINAL");
-            }
-            if (cadena != null) {
-                System.out.println(cadena);
-            }
-            if (operacion != null) {
-                System.out.println(operacion.getTipo());
-            }
-            System.out.println("]]]]]");
-        }
+
         if (operacion != null) {
             str += " " + operacion.getTipo();
             if (estado2 != null) {

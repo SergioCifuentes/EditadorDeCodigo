@@ -61,7 +61,7 @@ public class ConstructorDeEstados {
         pe.addAll(produccion);
 
         for (int i = 0; i < pe.size(); i++) {
-            System.out.println("ADERIVAR " + i + " " + pe.toString());
+            
             if (pe.get(i).getProduccion().getProducciones().size() != 0 && pe.get(i).getProduccion().getProducciones().size() > pe.get(i).getPosicion()) {
                 agregarSinRepetir(pe, derivar(pe.get(i)));
             }
@@ -177,10 +177,10 @@ public class ConstructorDeEstados {
 
         ArrayList<ConeccionDeEstado> con = new ArrayList<>();
         ArrayList<Simbolo> simbolosSiguientes = estado.conseguirSimbolosDelSiguienteEstado();
-        System.out.println("IIIIIIIIIIIIIIIIIIRRRRRRAAAAAAAAa  " + simbolosSiguientes.size());
+        
         ArrayList<ProduccionEstado> pe = new ArrayList<>();
         for (int i = 0; i < simbolosSiguientes.size(); i++) {
-            System.out.println("SIMN " + i + " " + simbolosSiguientes.get(i).getNombre());
+            
             pe= new ArrayList<>();
             for (int j = 0; j < estado.getProduciones().size(); j++) {
                 if (estado.getProduciones().get(j).getProduccion().getProducciones().size() != 0 && estado.getProduciones().get(j).getProduccion().getProducciones().size() > estado.getProduciones().get(j).getPosicion()) {

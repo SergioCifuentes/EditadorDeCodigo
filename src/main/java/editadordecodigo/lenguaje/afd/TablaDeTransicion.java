@@ -41,13 +41,7 @@ public class TablaDeTransicion {
             derivar(estadosAFD.get(i));
 
         }
-        for (int i = 0; i < estadosAFD.size(); i++) {
-            System.out.println("==== " + estadosAFD.get(i).getNumero() + "====");
-            System.out.println("TERMINAL " + estadosAFD.get(i).isTerminal());
-            for (int j = 0; j < estadosAFD.get(i).getConeccionesAFDs().size(); j++) {
-                System.out.println(estadosAFD.get(i).getConeccionesAFDs().get(j));
-            }
-        }
+       
       
 
     }
@@ -59,12 +53,8 @@ public class TablaDeTransicion {
             if (estado.getNumerosDeSubConjunto().get(i) != estados.size() + 1) {
                 ArrayList<Integer> num = tablaDeSiguientes.getTable().get(estado.getNumerosDeSubConjunto().get(i) - 1);
                 EstadoAFD estadoExi = verificarExistente(num);
-                System.out.println("FOR " + estado.getNumerosDeSubConjunto().get(i) + "NUM: ");
-                for (int j = 0; j < num.size(); j++) {
-                    System.out.print(num.get(j) + " ");
-                }
+                
                 if (estadoExi == null) {
-                    System.out.println("NULL;NUEVO");
                     EstadoAFD estadoNuevo = new EstadoAFD(estadosAFD.size(), num);
                     estadosAFD.add(estadoNuevo);
                     Token sim = crearSimbolo(estado.getNumerosDeSubConjunto().get(i));
@@ -72,7 +62,6 @@ public class TablaDeTransicion {
                     estado.getConeccionesAFDs().add(cafd);
 
                 } else {
-                    System.out.println("EXISTE");
                     Token sim = crearSimbolo(estado.getNumerosDeSubConjunto().get(i));
 
                     ConeccionesAFD cafd = new ConeccionesAFD(estadoExi, sim, nombreToken(estado.getNumerosDeSubConjunto().get(i)));

@@ -31,14 +31,14 @@ LineTerminator = \r|\n|\r\n
 "%%"                                  {return new Symbol(SimbolosLenguaje.separador, yycolumn,yyline,yytext());}
 ";"                                  {return new Symbol(SimbolosLenguaje.puntoYComa, yycolumn,yyline,yytext());}
 "*"                                  {return new Symbol(SimbolosLenguaje.asterisco, yycolumn,yyline,yytext());}
-"?"                                  {System.out.println("QMARK "+yyline+" "+yytext());return new Symbol(SimbolosLenguaje.qMark, yycolumn,yyline,yytext());}
-"+"                                  {System.out.println("SUMA "+yyline+" "+yytext());return new Symbol(SimbolosLenguaje.suma, yycolumn,yyline,yytext());}
+"?"                                  {return new Symbol(SimbolosLenguaje.qMark, yycolumn,yyline,yytext());}
+"+"                                  {return new Symbol(SimbolosLenguaje.suma, yycolumn,yyline,yytext());}
 "|"                                  {return new Symbol(SimbolosLenguaje.op, yycolumn,yyline,yytext());}
 "[0-9]"                                  {return new Symbol(SimbolosLenguaje.numeros, yycolumn,yyline,yytext());}
 "[a-z]"                                  {return new Symbol(SimbolosLenguaje.letras, yycolumn,yyline,yytext());}
-"\\n"                                  {System.out.println("Salto"+yyline);return new Symbol(SimbolosLenguaje.saltoDeLinea, yycolumn,yyline,yytext());}
+"\\n"                                  {return new Symbol(SimbolosLenguaje.saltoDeLinea, yycolumn,yyline,yytext());}
 "\\t"                                  {return new Symbol(SimbolosLenguaje.tab, yycolumn,yyline,yytext());}
-"\\b"                                  {System.out.println("BLANCO"+yyline);return new Symbol(SimbolosLenguaje.blanco, yycolumn,yyline,yytext());}
+"\\b"                                  {return new Symbol(SimbolosLenguaje.blanco, yycolumn,yyline,yytext());}
 "\""|"“"|"”"                                  {return new Symbol(SimbolosLenguaje.comillas, yycolumn,yyline,yytext());}
 "("                                  {return new Symbol(SimbolosLenguaje.parentesisA, yycolumn,yyline,yytext());}
 ")"                                  {return new Symbol(SimbolosLenguaje.parentesisC, yycolumn,yyline,yytext());}
@@ -54,15 +54,15 @@ LineTerminator = \r|\n|\r\n
 "}"                                  {return new Symbol(SimbolosLenguaje.llaveC, yycolumn,yyline,yytext());}
 
 
-        ({Digito})+                                     {System.out.println("ENTERO "+yyline+" "+yytext());return new Symbol(SimbolosLenguaje.Entero, yycolumn,yyline,yytext());}
-(({Digito})+".")*({Digito})+                           {System.out.println("NumeroVersion "+yyline+" "+yytext()); return new Symbol(SimbolosLenguaje.NumeroVersion, yycolumn,yyline,yytext());}      
-       ({Letra}|"_"|{Signo}|{Digito})+        {System.out.println("CADENA "+yyline+" "+yytext());return new Symbol(SimbolosLenguaje.Cadena, yycolumn,yyline,yytext()); }
+        ({Digito})+                                     {return new Symbol(SimbolosLenguaje.Entero, yycolumn,yyline,yytext());}
+(({Digito})+".")*({Digito})+                           {return new Symbol(SimbolosLenguaje.NumeroVersion, yycolumn,yyline,yytext());}      
+       ({Letra}|"_"|{Signo}|{Digito})+        {return new Symbol(SimbolosLenguaje.Cadena, yycolumn,yyline,yytext()); }
 
-        ("{"[^}]+"}"(" ")*";")                 {System.out.println("CODIGO "+yyline+" "+yytext());return new Symbol(SimbolosLenguaje.Codigo, yycolumn,yyline,yytext()); }
-        ("%%%"[^%]+"%%%")                 {System.out.println("FUENTE "+yyline+" "+yytext());return new Symbol(SimbolosLenguaje.Fuente, yycolumn,yyline,yytext()); }
-                {Comment}                      {System.out.println("COMENTARIO"+yyline+" "+yytext());}
+        ("{"[^}]+"}"(" ")*";")                 {return new Symbol(SimbolosLenguaje.Codigo, yycolumn,yyline,yytext()); }
+        ("%%%"[^%]+"%%%")                 {return new Symbol(SimbolosLenguaje.Fuente, yycolumn,yyline,yytext()); }
+                {Comment}                      {}
                          [ \t\r\f\n\b]                {}
-        .                                            {System.out.println("ANYTHING "+yyline+yytext());return new Symbol(SimbolosLenguaje.Anything,yycolumn,yyline,yytext());}
+        .                                            {return new Symbol(SimbolosLenguaje.Anything,yycolumn,yyline,yytext());}
 
 }
 
